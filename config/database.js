@@ -1,6 +1,5 @@
 const { Sequelize } = require('@sequelize/core')
 const { PostgresDialect } = require('@sequelize/postgres')
-require('dotenv').config({path: require('path').join(__dirname, './.env')})
 
 const sequelize = new Sequelize({
     dialect: PostgresDialect,
@@ -16,6 +15,5 @@ const sequelize = new Sequelize({
 sequelize.authenticate()
     .then(() => console.log('Database connected...'))
     .catch(err => console.error('Database connection error:', err))
-    .finally(() => console.log('Database closed...'))
 
 module.exports = sequelize

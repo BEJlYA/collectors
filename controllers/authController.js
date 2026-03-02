@@ -1,18 +1,6 @@
-const {Op} = require("sequelize")
-const bcrypt = require("bcrypt")
 const {validationResult} = require("express-validator")
-const jwt = require("jsonwebtoken")
-const models = require("../models")
-const User = models.User
-require('dotenv').config({path: require('path').join(__dirname, './.env')})
-
-const generateAccessToken = (id, role) => {
-    const payload = {
-        id,
-        role
-    }
-    return jwt.sign(payload, process.env.JWT_SECRET, {expiresIn: "48h"})
-}
+const UserService = require('../services/userService')
+const e = require("express");
 
 class AuthController {
     async registration(req, res) {
@@ -25,56 +13,11 @@ class AuthController {
 
             const {username, password, phoneNumber, email} = req.body
 
-            const existingUser = await User.findOne({
-                where: {
-                    [Op.or]: [
-                        {username},
-                        {email},
-                        {phoneNumber}
-                    ].filter(Boolean)
-                }
-            })
+            const userData = await UserService.registration({username, password, phoneNumber, email})
 
-            if (existingUser) {
-                if (existingUser.username === username) {
-                    new Error('Логин уже занят')
-                }
-                if (existingUser.email === email) {
-                    new Error('Email уже зарегистрирован')
-                }
-                if (existingUser.phoneNumber === phoneNumber) {
-                    new Error('Телефон уже используется')
-                }
-            }
-
-            const hashPassword = bcrypt.hashSync(password, 7)
-
-            await User.create({
-                username,
-                email,
-                phoneNumber,
-                password: await hashPassword,
-                role: 'USER'
-            })
-
-            return res.status(200).json({message: 'Пользователь создан!'})
+            return res.json({message: 'Пользователь создан!'}, userData)
         } catch (e) {
-            if (e.name === 'SequelizeUniqueConstraintError') {
-                const field = e.errors[0].path
-                const messages = {
-                    username: 'Логин уже занят',
-                    email: 'Email уже зарегистрирован',
-                    phoneNumber: 'Телефон уже используется'
-                }
-                return res.status(409).json({
-                    message: messages[field] || 'Данные уже используются'
-                })
-            }
-
-            return res.status(500).json({
-                message: 'Ошибка регистрации',
-                error: e.message
-            })
+            console.log(e)
         }
     }
 
@@ -88,27 +31,22 @@ class AuthController {
 
             const {identifier, password} = req.body
 
-            const existingUser = await User.findOne({
-                where: {
-                    [Op.or]: [
-                        {username: identifier},
-                        {email: identifier},
-                        {phoneNumber: identifier}
-                    ]
-                }
-            })
+            const userData = await UserService.login(identifier, password)
 
-            if (!existingUser || !bcrypt.compareSync(password, existingUser.password)) {
-                return res.status(401).json({ message: 'Неверные данные' })
-            }
-
-            const token = generateAccessToken(existingUser.id, existingUser.role)
-
-            return res.status(200).json({message: 'Успешная авторизация!', token})
+            return res.json({message: 'Успешная авторизация!', userData})
         } catch (e) {
             console.log(e)
-            res.status(400).json({message: 'Ошибка аунтетификации: ', e})
         }
+    }
+
+    async activate(req, res){
+        try {
+            await UserService.activate(req.params.link)
+            return res.redirect(process.env.CLIENT_URL)
+        } catch (e) {
+            console.log(e)
+        }
+
     }
 }
 
