@@ -30,6 +30,10 @@ class ProfileRepository{
             isActive: data.isActive
         })
     }
+
+    async update(profile, data){
+        return await profile.update(data)
+    }
 }
 
 module.exports = new ProfileRepository()

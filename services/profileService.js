@@ -13,18 +13,22 @@ class ProfileService {
     }
 
     async newProfile(data) {
+        if (!data.name || !data.displayName) {
+            throw ApiError.BadRequest('Имя и отображаемое имя обязательны')
+        }
+
         const existingProfile = await ProfileRepository.isBusyData(data)
 
         if (existingProfile) {
             if (existingProfile.name === data.name) {
-                throw ApiError.BadRequest('Такое профиль уже есть')
+                throw ApiError.Conflict('Такой профиль уже есть')
             }
             if (existingProfile.displayName === data.displayName) {
-                throw ApiError.BadRequest('Такое имя профиля уже есть')
+                throw ApiError.Conflict('Такое имя профиля уже есть')
             }
         }
 
-        await ProfileRepository.createProfile(data)
+        return await ProfileRepository.createProfile(data)
     }
 
     async updateProfile(id, data) {
@@ -53,7 +57,7 @@ class ProfileService {
             throw ApiError.Conflict('Нет данных для обновления')
         }
 
-        await existingProfile.update(updateData)
+        return await ProfileRepository.update(existingProfile, data)
     }
 }
 

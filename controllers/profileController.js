@@ -7,9 +7,9 @@ const ProfileRepository = require('../repository/profileRepository')
 class ProfileController {
     async getAllProfile(req, res) {
         try {
-            const allProfilize = await ProfileRepository.getAll()
+            const profles = await ProfileRepository.getAll()
 
-            return res.json(allProfilize)
+            return res.json(profles)
         } catch (e) {
             console.log(e)
         }
@@ -23,9 +23,9 @@ class ProfileController {
                 return res.status(401).json({message: "Некорректный ID: ", errors})
             }
 
-            const model = await ProfileService.getProfile(req.params.id)
+            const profile = await ProfileService.getProfile(req.params.id)
 
-            return res.json(model)
+            return res.json(profile)
         } catch (e) {
             console.log(e)
         }
@@ -35,7 +35,7 @@ class ProfileController {
         try {
             const {name, displayName, description, isActive} = req.body
 
-            await ProfileService.newProfile({
+            const profile = await ProfileService.newProfile({
                 name,
                 displayName,
                 description,
@@ -59,7 +59,7 @@ class ProfileController {
             const {name, displayName, description, isActive} = req.body
             const id = req.params.id
 
-            await ProfileService.updateProfile(id, {
+            const profile = await ProfileService.updateProfile(id, {
                 name,
                 displayName,
                 description,
