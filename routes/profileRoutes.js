@@ -1,38 +1,38 @@
-const {Router} = require("express")
+const {Router} = require('express')
 const router = Router()
-const ProfileController = require("../controllers/ProfileController")
-const authMiddleware = require("../middleware/authMiddleware")
-const roleMiddleware = require("../middleware/roleMiddleware")
-const ProfileValidator = require('validators/profileValidator')
+const ProfileController = require('../controllers/ProfileController')
+const AuthMiddleware = require('../middleware/authMiddleware')
+const RoleMiddleware = require('../middleware/roleMiddleware')
+const ProfileValidator = require('../validators/profileValidator')
 
-router.get("/",
-    authMiddleware,
+router.get('/',
+    AuthMiddleware,
     ProfileController.getAllProfile
 )
 
-router.get("/:id",
-    authMiddleware,
-    ProfileValidator.id,
+router.get('/:id',
+    AuthMiddleware,
+    ProfileValidator.id(),
     ProfileController.getProfile
 )
 
-router.post("/",
-    authMiddleware,
-    roleMiddleware(['ADMIN']),
+router.post('/',
+    AuthMiddleware,
+    RoleMiddleware(['ADMIN']),
     ProfileController.newProfile
 )
 
-router.put("/:id",
-    authMiddleware,
-    roleMiddleware(['ADMIN']),
-    ProfileValidator.id,
+router.put('/:id',
+    AuthMiddleware,
+    RoleMiddleware(['ADMIN']),
+    ProfileValidator.id(),
     ProfileController.updateProfile
 )
 
-router.delete("/:id",
-    authMiddleware,
-    roleMiddleware(['ADMIN']),
-    ProfileValidator.id,
+router.delete('/:id',
+    AuthMiddleware,
+    RoleMiddleware(['ADMIN']),
+    ProfileValidator.id(),
     ProfileController.deleteProfile
 )
 

@@ -1,17 +1,17 @@
-const models = require("../models")
-const {Op} = require("sequelize");
+const models = require('../models')
+const {Op} = require('sequelize');
 const ProfileType = models.ProfileType
 
-class ProfileRepository{
-    async getAll(){
+class ProfileRepository {
+    async getAll() {
         return await ProfileType.findAll()
     }
 
-    async findCurrent(id){
+    async findCurrent(id) {
         return await ProfileType.findByPk(id)
     }
 
-    async isBusyData(data){
+    async isBusyData(data) {
         return await ProfileType.findOne({
             where: {
                 [Op.or]: [
@@ -31,8 +31,12 @@ class ProfileRepository{
         })
     }
 
-    async update(profile, data){
+    async update(profile, data) {
         return await profile.update(data)
+    }
+
+    async delete(profile) {
+        await profile.destroy()
     }
 }
 

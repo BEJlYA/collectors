@@ -1,37 +1,36 @@
-const {validationResult} = require("express-validator")
-const models = require("../models")
-const ProfileType = models.ProfileType
+const {validationResult} = require('express-validator')
 const ProfileService = require('../services/profileService')
 const ProfileRepository = require('../repository/profileRepository')
+const ApiError = require('../exeptions/appError');
 
 class ProfileController {
-    async getAllProfile(req, res) {
+    async getAllProfile(req, res, next) {
         try {
-            const profles = await ProfileRepository.getAll()
+            const profiles = await ProfileRepository.getAll()
 
-            return res.json(profles)
+            return res.json(profiles)
         } catch (e) {
-            console.log(e)
+            next(e)
         }
     }
 
-    async getProfile(req, res) {
+    async getProfile(req, res, next) {
         try {
             const errors = validationResult(req)
 
             if (!errors.isEmpty()) {
-                return res.status(401).json({message: "Некорректный ID: ", errors})
+                return next(ApiError.BadRequest('Ошибка при валидации:', errors.array()))
             }
 
             const profile = await ProfileService.getProfile(req.params.id)
 
             return res.json(profile)
         } catch (e) {
-            console.log(e)
+            next(e)
         }
     }
 
-    async newProfile(req, res) {
+    async newProfile(req, res, next) {
         try {
             const {name, displayName, description, isActive} = req.body
 
@@ -42,18 +41,20 @@ class ProfileController {
                 isActive
             })
 
-            return res.json({message: 'Новая профилизация создана успешно!'})
+            return res.json({
+                message: 'Новая профилизация создана успешно!'
+            })
         } catch (e) {
-            console.log(e)
+            next(e)
         }
     }
 
-    async updateProfile(req, res) {
+    async updateProfile(req, res, next) {
         try {
             const errors = validationResult(req)
 
             if (!errors.isEmpty()) {
-                return res.status(401).json({message: "Некорректный ID: ", errors})
+                return next(ApiError.BadRequest('Ошибка при валидации:', errors.array()))
             }
 
             const {name, displayName, description, isActive} = req.body
@@ -66,31 +67,29 @@ class ProfileController {
                 isActive
             })
 
-            return res.json({message: 'Вид коллекционирования обновлен'})
+            return res.json({
+                message: 'Вид коллекционирования обновлен'
+            })
         } catch (e) {
-            console.log(e)
+            next(e)
         }
     }
 
-    async deleteProfile(req, res){
+    async deleteProfile(req, res, next) {
         try {
             const errors = validationResult(req)
 
             if (!errors.isEmpty()) {
-                return res.status(401).json({message: "Некорректный ID: ", errors})
+                return next(ApiError.BadRequest('Ошибка при валидации:', errors.array()))
             }
 
-            const existingProfile = await ProfileType.findByPk(req.params.id)
+            await ProfileService.deleteProfile(req.params.id)
 
-            if (!existingProfile) {
-                return res.status(404).json({message: 'Вид коллекционирования не найден'})
-            }
-
-            await existingProfile.destroy()
-
-            return res.json({message: 'Вид коллекционирования удален'})
+            return res.json({
+                message: 'Вид коллекционирования удален'
+            })
         } catch (e) {
-            console.log(e)
+            next(e)
         }
     }
 }

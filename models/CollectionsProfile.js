@@ -1,7 +1,9 @@
-const { DataTypes, Model } = require("@sequelize/core")
+const {DataTypes, Model} = require('@sequelize/core')
 const sequelize = require('../config/database');
 
-class CollectionsProfile extends Model {}
+class CollectionsProfile extends Model {
+}
+
 CollectionsProfile.init({
     id: {
         type: DataTypes.INTEGER,
@@ -19,7 +21,7 @@ CollectionsProfile.init({
         defaultValue: 'Not defined'
     },
     profileTypeId: {
-      type: DataTypes.INTEGER,
+        type: DataTypes.INTEGER,
         allowNull: false,
         defaultValue: 1,
         columnName: 'profile_type_id'

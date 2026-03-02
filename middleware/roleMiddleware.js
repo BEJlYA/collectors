@@ -1,15 +1,21 @@
+const ApiError = require('../exeptions/appError')
+
 module.exports = function (requiredRoles) {
     return function (req, res, next) {
-        if (!req.user) {
-            return res.status(401).json({message: "Пользователь не авторизован"})
+        try {
+            if (!req.user) {
+                return next(ApiError.UnauthorizedError('Пользователь не авторизован'))
+            }
+
+            const hasRole = requiredRoles.includes(req.user.role)
+
+            if (!hasRole) {
+                return next(ApiError.Conflict('Нет прав доступа'))
+            }
+
+            next()
+        } catch (e) {
+            next()
         }
-
-        const hasRole = requiredRoles.includes(req.user.role)
-
-        if (!hasRole) {
-            return res.status(403).json({message: "Нет прав доступа"})
-        }
-
-        next()
     }
 }

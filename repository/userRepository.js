@@ -1,5 +1,5 @@
-const {Op} = require("sequelize")
-const models = require("../models")
+const {Op} = require('sequelize')
+const models = require('../models')
 const User = models.Users
 
 class UserRepository {
@@ -38,12 +38,16 @@ class UserRepository {
         })
     }
 
-    async activateUser(activationLink){
+    async activateUser(activationLink) {
         return await User.findOne({
             where: {
                 activationLink
             }
         })
+    }
+
+    async updateData(userData, data) {
+        await userData.update(data)
     }
 }
 

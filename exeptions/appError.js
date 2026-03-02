@@ -16,8 +16,8 @@ module.exports = class ApiError extends Error {
         return new ApiError(400, 'Ошибка валидации', errors)
     }
 
-    static UnauthorizedError() {
-        return new ApiError(401, 'Пользователь не авторизован')
+    static UnauthorizedError(message = 'Пользователь не авторизован') {
+        return new ApiError(401, message)
     }
 
     static Forbidden(message, errors = []) {

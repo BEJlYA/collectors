@@ -1,4 +1,4 @@
-const ProfileRepository = require("../repository/profileRepository")
+const ProfileRepository = require('../repository/profileRepository')
 const ApiError = require('../exeptions/appError')
 
 class ProfileService {
@@ -58,6 +58,16 @@ class ProfileService {
         }
 
         return await ProfileRepository.update(existingProfile, data)
+    }
+
+    async deleteProfile(id) {
+        const profile = await ProfileRepository.findCurrent(id)
+
+        if (!profile) {
+            return ApiError.BadRequest('Вид коллекционирования не найден')
+        }
+
+        await ProfileRepository.delete(profile)
     }
 }
 

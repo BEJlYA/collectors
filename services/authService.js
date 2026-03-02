@@ -1,4 +1,4 @@
-const bcrypt = require("bcrypt")
+const bcrypt = require('bcrypt')
 const {v4: uuid} = require('uuid')
 const TokenService = require('../services/tokenService')
 const UserRepository = require('../repository/userRepository')
@@ -6,7 +6,7 @@ const MailService = require('../services/mailService')
 const UserDto = require('../dtos/userDto')
 const ApiError = require('../exeptions/appError')
 
-class UserService {
+class AuthService {
     async registration(data) {
         const existingUser = await UserRepository.isBusyData(
             data.username,
@@ -43,37 +43,44 @@ class UserService {
         )
 
         const userDto = new UserDto(user)
+        const {accessToken, refreshToken} = await TokenService.generateTokens({...userDto})
 
-        return {userDto}
+        return {
+            accessToken,
+            refreshToken,
+            user: userDto
+        }
     }
 
     async login(identifier, password) {
         const user = await UserRepository.existsUser(identifier)
 
-        if (!user || !bcrypt.compareSync(password, user.passwordHash)) {
+        if (!user || !await bcrypt.compare(password, user.passwordHash)) {
             throw ApiError.BadRequest('Неверные данные')
         }
 
         const userDto = new UserDto(user)
+        const {accessToken, refreshToken} = await TokenService.generateTokens({...userDto})
 
-        const tokens = await TokenService.generateTokens({
-            id: user.id,
-            role: user.role
-        })
-
-        return {tokens, userDto}
+        return {
+            accessToken,
+            refreshToken,
+            user: userDto}
     }
 
-    async activate(activationLink){
+    async activate(activationLink) {
         const user = await UserRepository.activateUser(activationLink)
 
         if (!user) {
             throw ApiError.NotFound('Ошибка активации профиля')
         }
-        await user.update({
-            isActivated: true
-        })
+
+        await UserRepository.updateData(user, {isActivated: true})
+    }
+
+    async logout(refreshToken) {
+        return await TokenService.deleteToken(refreshToken)
     }
 }
 
-module.exports = new UserService()
+module.exports = new AuthService()

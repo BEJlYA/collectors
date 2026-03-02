@@ -1,6 +1,6 @@
 const nodemailer = require('nodemailer')
 
-class MailService{
+class MailService {
     constructor() {
         this.transporter = nodemailer.createTransport({
             host: process.env.SMTP_HOST,
@@ -23,7 +23,7 @@ class MailService{
                 `
                     <div>
                         <h1>Для активации аккаунта перейдите по ссылке:</h1>
-                        <a href="${link}">${link}</a>
+                        <a href='${link}'>${link}</a>
                     </div>
                 `
 

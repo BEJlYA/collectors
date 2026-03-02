@@ -1,21 +1,25 @@
-const models = require("../models")
-const Token = models.Token
+const models = require('../models')
+const token = models.Token
 
-class TokenRepository{
-    async saveTokens(userId, tokens) {
-        const model = await this.getTokens(userId)
-        await model.update({
-            refreshToken: tokens.refreshToken
+class TokenRepository {
+    async saveTokens(userId, refreshToken) {
+        await token.create({
+            userId,
+            refreshToken
         })
     }
 
     async getTokens(userId) {
-        return await Token.findByPk(userId)
+        return await token.findByPk(userId)
     }
 
-    async updateRefreshToken(userTokens, Token) {
-        userTokens.refreshToken = Token
-        await userTokens.save()
+    async updateRefreshToken(tokenData, token) {
+        await tokenData.update({refreshToken: token})
+    }
+
+    async deleteRefreshToken(refreshToken) {
+        const tokenData = await token.findOne({where: refreshToken})
+        return await tokenData.destroy()
     }
 }
 

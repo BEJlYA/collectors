@@ -1,6 +1,6 @@
-const {body} = require("express-validator")
+const {body} = require('express-validator')
 
-class AuthValidator{
+class AuthValidator {
     login() {
         return [
             body('identifier')
@@ -17,7 +17,7 @@ class AuthValidator{
             body('username')
                 .notEmpty()
                 .withMessage('Имя пользователя не может быть пустым')
-                .isLength({min: 3, max: 20})
+                .isLength({min: 5, max: 20})
                 .withMessage('Имя пользователя должно иметь длину более 5 символов и не более 30')
                 .isAlphanumeric()
                 .withMessage('Только буквы или цифры')

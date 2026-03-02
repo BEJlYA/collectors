@@ -1,7 +1,9 @@
-const { DataTypes, Model } = require("@sequelize/core")
+const {DataTypes, Model} = require('@sequelize/core')
 const sequelize = require('../config/database');
 
-class Reviews extends Model {}
+class Reviews extends Model {
+}
+
 Reviews.init({
     id: {
         type: DataTypes.INTEGER,

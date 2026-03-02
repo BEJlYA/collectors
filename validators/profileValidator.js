@@ -1,6 +1,6 @@
-const {param} = require("express-validator")
+const {param} = require('express-validator')
 
-class ProfileValidator{
+class ProfileValidator {
     id() {
         return [
             param('id')
