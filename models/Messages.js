@@ -6,14 +6,14 @@ class Messages extends Model {
 
 Messages.init({
     id: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.BIGINT,
         primaryKey: true,
         autoIncrement: true
     },
-    dealId: {
+    itemId: {
         type: DataTypes.INTEGER,
         allowNull: false,
-        columnName: 'deal_id'
+        columnName: 'item_id'
     },
     userId: {
         type: DataTypes.INTEGER,

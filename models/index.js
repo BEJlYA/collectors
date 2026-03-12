@@ -1,140 +1,128 @@
 const sequelize = require('../config/database')
 const Users = require('./Users')
-const Token = require('./Token')
-const CollectionsProfile = require('./CollectionsProfile')
-const ProfileType = require('./ProfileType')
-const Collections = require('./Collections')
+const Tokens = require('./Tokens')
+const Profiles = require('./Profiles')
+const Feedbacks = require('./Feedbacks')
 const Bookmarks = require('./Bookmarks')
+const Collections = require('./Collections')
+const Category = require('./Category')
+const Items = require('./Items')
 const ItemPhotos = require('./ItemPhotos')
-const Deals = require('./Deals')
 const Messages = require('./Messages')
-const Reviews = require('./Reviews')
-
-// Пользователь -> Профили коллекций
-Users.hasMany(CollectionsProfile, {
-    foreignKey: 'userId'
-})
-CollectionsProfile.belongsTo(Users, {
-    foreignKey: 'userId'
-})
 
 // Пользователь -> Токены
-Users.hasMany(Token, {
+Users.hasMany(Tokens, {
     foreignKey: 'userId',
     as: 'tokens'
 })
-
-Token.belongsTo(Users, {
+Tokens.belongsTo(Users, {
     foreignKey: 'userId',
     as: 'user'
 })
 
-// Профиль коллекции -> Предметы
-CollectionsProfile.hasMany(Collections, {
-    foreignKey: 'profileId'
-})
-Collections.belongsTo(CollectionsProfile, {
-    foreignKey: 'profileId'
-})
-
-// Тип профиля -> Профили коллекций (ОДИН РАЗ)
-ProfileType.hasMany(CollectionsProfile, {
-    foreignKey: 'profileTypeId',
-    as: 'profiles'
-})
-CollectionsProfile.belongsTo(ProfileType, {
-    foreignKey: 'profileTypeId',
-    as: 'profileType'
+//Пользователь -> Профиль
+Users.hasOne(Profiles, {
+    foreignKey: {
+        name: 'userId',
+        onDelete: 'CASCADE'
+    },
+    as: 'profile'
 })
 
-// Предметы -> Фото
-Collections.hasMany(ItemPhotos, {
-    foreignKey: 'itemId'
-})
-ItemPhotos.belongsTo(Collections, {
-    foreignKey: 'itemId'
-})
-
-// Закладки
-Users.hasMany(Bookmarks, {
-    foreignKey: 'userId'
-})
-Bookmarks.belongsTo(Users, {
-    foreignKey: 'userId'
-})
-
-Collections.hasMany(Bookmarks, {
-    foreignKey: 'itemId'
-})
-Bookmarks.belongsTo(Collections, {
-    foreignKey: 'itemId'
-})
-
-// Сделки
-Users.hasMany(Deals, {
-    foreignKey: 'initiatorId',
-    as: 'initiatedDeals',
-    inverse: {
-        as: 'initiator'
-    }
-})
-
-Users.hasMany(Deals, {
-    foreignKey: 'targetUserId',
-    as: 'receivedDeals',
-    inverse: {
-        as: 'targetUser'
-    }
-})
-
-// Отзывы
-Users.hasMany(Reviews, {
-    foreignKey: 'fromUser',
+// Пользователь -> Отзывы
+Users.hasMany(Feedbacks, {
+    foreignKey: {
+        name: 'fromUser',
+        onDelete: 'CASCADE'
+    },
     as: 'givenReviews',
     inverse: {
         as: 'reviewer'
     }
 })
 
-Users.hasMany(Reviews, {
-    foreignKey: 'targetUser',
+Users.hasMany(Feedbacks, {
+    foreignKey: {
+        name: 'targetUser',
+        onDelete: 'CASCADE'
+    },
     as: 'receivedReviews',
     inverse: {
         as: 'reviewedUser'
     }
 })
 
-//Сообщения сделки
-Deals.hasMany(Messages, {
-    foreignKey: 'dealId',
-    as: 'messages'
+// Пользователь -> Закладки
+Users.hasMany(Bookmarks, {
+    foreignKey: {
+        name: 'userId',
+        onDelete: 'CASCADE'
+    }
 })
 
-Messages.belongsTo(Deals, {
-    foreignKey: 'dealId',
-    as: 'deal'
+Items.hasMany(Bookmarks, {
+    foreignKey: {
+        name: 'itemId',
+        onDelete: 'CASCADE'
+    }
 })
 
+// Пользователь -> Коллекции
+Users.hasMany(Collections, {
+    foreignKey: {
+        name: 'userId',
+        onDelete: 'CASCADE'
+    }
+})
+
+// Категории -> Коллекции
+Category.hasMany(Collections, {
+    foreignKey: {
+        name: 'categoryTypeId',
+        onDelete: 'CASCADE'
+    },
+    as: 'collections'
+})
+Collections.belongsTo(Category, {
+    foreignKey: 'categoryTypeId',
+    as: 'categoryType'
+})
+
+// Коллекции -> Предметы
+Collections.hasMany(Items, {
+    foreignKey: {
+        name: 'collectionId',
+        onDelete: 'CASCADE'
+    }
+})
+
+// Предметы -> Фото
+Items.hasMany(ItemPhotos, {
+    foreignKey: {
+        name: 'itemId',
+        onDelete: 'CASCADE'
+    }
+})
+
+//Пользователь -> Сообщения
 Users.hasMany(Messages, {
-    foreignKey: 'userId',
+    foreignKey: {
+        name: 'userId',
+        onDelete: 'CASCADE'
+    },
     as: 'messages'
-})
-
-Messages.belongsTo(Users, {
-    foreignKey: 'userId',
-    as: 'user'
 })
 
 module.exports = {
     sequelize,
     Users,
-    Token,
-    CollectionsProfile,
-    Collections,
-    ProfileType,
+    Tokens,
+    Profiles,
+    Feedbacks,
     Bookmarks,
+    Collections,
+    Category,
+    Items,
     ItemPhotos,
-    Deals,
     Messages,
-    Reviews
 }

@@ -1,24 +1,23 @@
 const models = require('../models')
-const token = models.Token
+const Tokens = models.Tokens
 
 class TokenRepository {
     async saveTokens(userId, refreshToken) {
-        await token.create({
+        await Tokens.create({
             userId,
             refreshToken
         })
     }
 
-    async getTokens(userId) {
-        return await token.findByPk(userId)
+    async findByUserId(userId) {
+        return await Tokens.findByPk(userId)
     }
 
-    async updateRefreshToken(tokenData, token) {
-        await tokenData.update({refreshToken: token})
+    async update(tokenData, refreshToken) {
+        await tokenData.updateCategory({refreshToken})
     }
 
-    async deleteRefreshToken(refreshToken) {
-        const tokenData = await token.findOne({where: refreshToken})
+    async delete(tokenData) {
         return await tokenData.destroy()
     }
 }

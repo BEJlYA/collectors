@@ -6,7 +6,7 @@ class ItemPhotos extends Model {
 
 ItemPhotos.init({
     id: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.BIGINT,
         primaryKey: true,
         autoIncrement: true
     },
@@ -18,7 +18,7 @@ ItemPhotos.init({
     photoUrl: {
         type: DataTypes.STRING,
         columnName: 'photo_url',
-        defaultValue: 'Not defined'
+        defaultValue: null
     },
     isPrimary: {
         type: DataTypes.BOOLEAN,
@@ -28,14 +28,14 @@ ItemPhotos.init({
     },
     sortOrder: {
         type: DataTypes.INTEGER,
-        allowNull: false,
         defaultValue: 0,
         columnName: 'sort_order'
     }
 }, {
     sequelize,
     modelName: 'ItemPhotos',
-    tableName: 'item_photos'
+    tableName: 'item_photos',
+    timestamps: false
 })
 
 module.exports = ItemPhotos

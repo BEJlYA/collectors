@@ -1,10 +1,10 @@
 const {DataTypes, Model} = require('@sequelize/core')
 const sequelize = require('../config/database');
 
-class Reviews extends Model {
+class Feedbacks extends Model {
 }
 
-Reviews.init({
+Feedbacks.init({
     id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
@@ -20,6 +20,11 @@ Reviews.init({
         allowNull: false,
         columnName: 'target_user'
     },
+    initiatorType:{
+        type: DataTypes.ENUM('SELLER', 'BUYER'),
+        allowNull: false,
+        columName: 'initiator_type'
+    },
     comment: {
         type: DataTypes.STRING,
         allowNull: false
@@ -28,15 +33,20 @@ Reviews.init({
         type: DataTypes.INTEGER,
         validate: {
             min: 1,
-            max: 10
+            max: 5
         },
         allowNull: false
+    },
+    createdAt: {
+    type: DataTypes.DATE,
+        defaultValue: DataTypes.NOW,
+        columnName: 'created_at'
     }
 }, {
     sequelize,
     modelName: 'Reviews',
     tableName: 'reviews',
-    timestamps: true,
+    timestamps: false,
     indexes: [
         {
             unique: true,
@@ -45,4 +55,4 @@ Reviews.init({
     ]
 })
 
-module.exports = Reviews
+module.exports = Feedbacks

@@ -1,10 +1,13 @@
 const {Router} = require('express')
 const router = Router()
 
-router.get('/users')
+router.get('/me',
+    )
 
-router.get('/users/:id')
+router.post('/me',
+    )
 
-router.put('/users/:id')
+router.get('/:publicId',
+    )
 
 module.exports = router

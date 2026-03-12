@@ -1,10 +1,10 @@
 const {DataTypes, Model} = require('@sequelize/core')
 const sequelize = require('../config/database');
 
-class ProfileType extends Model {
+class Category extends Model {
 }
 
-ProfileType.init({
+Category.init({
     id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
@@ -30,8 +30,9 @@ ProfileType.init({
     }
 }, {
     sequelize,
-    modelName: 'ProfileType',
-    tableName: 'profile_types'
+    modelName: 'Category',
+    tableName: 'category',
+    timestamps: false
 })
 
-module.exports = ProfileType
+module.exports = Category

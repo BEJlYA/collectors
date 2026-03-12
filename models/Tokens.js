@@ -1,10 +1,10 @@
 const {DataTypes, Model} = require('@sequelize/core')
 const sequelize = require('../config/database');
 
-class Token extends Model {
+class Tokens extends Model {
 }
 
-Token.init({
+Tokens.init({
     userId: {
         type: DataTypes.INTEGER,
         primaryKey: true,
@@ -19,9 +19,9 @@ Token.init({
     }
 }, {
     sequelize,
-    modelName: 'Token',
-    tableName: 'token',
+    modelName: 'Tokens',
+    tableName: 'tokens',
     timestamps: false
 })
 
-module.exports = Token
+module.exports = Tokens

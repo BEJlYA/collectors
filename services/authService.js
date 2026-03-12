@@ -1,85 +1,163 @@
 const bcrypt = require('bcrypt')
 const {v4: uuid} = require('uuid')
-const TokenService = require('../services/tokenService')
-const UserRepository = require('../repository/userRepository')
-const MailService = require('../services/mailService')
+const TokenService = require('../services/TokenService')
+const UserRepository = require('../repository/UserRepository')
+const mailQueue = require('../workers/mailQueue')
+const TokenRepository = require('../repository/tokenRepository')
 const UserDto = require('../dtos/userDto')
 const ApiError = require('../exeptions/appError')
 
 class AuthService {
     async registration(data) {
-        const existingUser = await UserRepository.isBusyData(
-            data.username,
-            data.email,
-            data.phoneNumber
+        const { email, phoneNumber, password } = data
+
+        if (!email && !phoneNumber) {
+            throw ApiError.BadRequest('Укажите email или номер телефона')
+        }
+
+        const existingUser = await UserRepository.findSimilar(
+            email || null,
+            phoneNumber || null
         )
 
         if (existingUser) {
-            if (existingUser.username === data.username) {
-                throw ApiError.Conflict('Логин уже занят')
-            }
-            if (existingUser.email === data.email) {
+            if (existingUser.email === email) {
                 throw ApiError.Conflict('Email уже зарегистрирован')
             }
-            if (existingUser.phoneNumber === data.phoneNumber) {
+            if (existingUser.phoneNumber === phoneNumber) {
                 throw ApiError.Conflict('Телефон уже используется')
             }
         }
 
-        const hashPassword = bcrypt.hashSync(data.password, 7)
+        const hashPassword = bcrypt.hashSync(password, 7)
         const activationLink = uuid()
 
-        const user = await UserRepository.createUser(
-            data.username,
-            data.email,
-            data.phoneNumber,
+        const userData = await UserRepository.createUser(
+            email || null,
+            phoneNumber || null,
             hashPassword,
             activationLink
         )
 
-        await MailService.sendActivationMail(
-            user.email,
-            `${process.env.API_URL}/api/auth/activate/${activationLink}`
-        )
+        if (userData.email) {
+            await mailQueue.add('sendActivation', {
+                to: userData.email,
+                link: `${process.env.API_URL}/api/v1/auth/activate/${activationLink}`
+            })
+        }
 
-        const userDto = new UserDto(user)
-        const {accessToken, refreshToken} = await TokenService.generateTokens({...userDto})
+        const userDto = new UserDto(userData)
+        const {accessToken, refreshToken} = await TokenService.generateTokens({
+            id: userData.id,
+            role: userData.role
+        })
 
         return {
             accessToken,
             refreshToken,
-            user: userDto
+            userDto
         }
     }
 
     async login(identifier, password) {
-        const user = await UserRepository.existsUser(identifier)
+        const userData = await UserRepository.findSimilar(identifier, identifier)
 
-        if (!user || !await bcrypt.compare(password, user.passwordHash)) {
+        if (!userData || !await bcrypt.compare(password, userData.passwordHash)) {
             throw ApiError.BadRequest('Неверные данные')
         }
 
-        const userDto = new UserDto(user)
+        const userDto = new UserDto(userData)
+        const {accessToken, refreshToken} = await TokenService.generateTokens({
+            id: userData.id,
+            role: userData.role
+        })
+
+        return {
+            accessToken,
+            refreshToken,
+            userDto
+        }
+    }
+
+    async handleOAuth(provider, profile) {
+        const email = profile.emails?.[0]?.value
+        const firstName = profile.name?.givenName || ''
+        const lastName = profile.name?.familyName || ''
+        const avatarUrl = profile.photos?.[0]?.value || ''
+
+        if (!email) {
+            throw ApiError.BadRequest('Email не предоставлен провайдером')
+        }
+
+        let userData = await UserRepository.findByOAuth(provider, profile.id)
+
+        if (!userData) {
+            userData = await UserRepository.findByEmail(email)
+
+            if (userData) {
+                userData = await UserRepository.updateOAuthData(userData.id, {
+                    oauthProvider: provider,
+                    oauthId: profile.id
+                })
+            }
+        }
+
+        if (!userData) {
+            userData = await UserRepository.createOAuthUser({
+                email,
+                oauthProvider: provider,
+                oauthId: profile.id,
+                isActivated: true,
+                role: 'USER',
+                firstName,
+                lastName,
+                avatarUrl
+            })
+        }
+
+        const userDto = new UserDto(userData)
+        const {accessToken, refreshToken} = await TokenService.generateTokens({
+            id: userData.id,
+            role: userData.role
+        })
+
+        return {
+            accessToken,
+            refreshToken,
+            userDto
+        }
+    }
+    
+    async activate(activationLink) {
+        const userData = await UserRepository.activateUser(activationLink)
+
+        if (!userData) {
+            throw ApiError.NotFound('Ошибка активации профиля')
+        }
+
+        await UserRepository.updateData(userData, {isActivated: true})
+    }
+
+    async refresh(userId) {
+        const modelToken = await TokenRepository.findByUserId(userId)
+
+        if (!modelToken) {
+            throw ApiError.UnauthorizedError('Refresh токен отозван')
+        }
+
+        const userData = await UserRepository.findUserPk(userId)
+        const userDto = new UserDto(userData)
         const {accessToken, refreshToken} = await TokenService.generateTokens({...userDto})
 
         return {
             accessToken,
             refreshToken,
-            user: userDto}
-    }
-
-    async activate(activationLink) {
-        const user = await UserRepository.activateUser(activationLink)
-
-        if (!user) {
-            throw ApiError.NotFound('Ошибка активации профиля')
+            userDto
         }
-
-        await UserRepository.updateData(user, {isActivated: true})
     }
 
-    async logout(refreshToken) {
-        return await TokenService.deleteToken(refreshToken)
+    async logout(userId) {
+        return await TokenService.deleteToken(userId)
     }
 }
 

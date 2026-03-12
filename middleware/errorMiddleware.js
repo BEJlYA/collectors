@@ -1,14 +1,10 @@
 const ApiError = require('../exeptions/appError')
+const ResponseFormatter = require('../utils/ResponseFormatter')
 
 module.exports = function (err, req, res, next) {
-    console.log(err)
     if (err instanceof ApiError) {
-        return res.status(err.status).json({
-            message: err.message,
-            errors: err.errors
-        })
+        return ResponseFormatter.error(res, err, err.status)
     }
-    return res.status(500).json({
-        message: 'Непредвиденная ошибка'
-    })
+
+    return ResponseFormatter.error(res, err, 500)
 }

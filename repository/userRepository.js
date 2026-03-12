@@ -1,45 +1,87 @@
 const {Op} = require('sequelize')
 const models = require('../models')
-const User = models.Users
+const Users = models.Users
+const Profiles = models.Profiles
 
 class UserRepository {
-    async isBusyData(username, email, phoneNumber) {
-        return await User.findOne({
+    async findByEmail(email) {
+        return await Users.findOne({ where: { email }})
+    }
+
+    async findByOAuth(provider, oauthId) {
+        return await Users.findOne({
+            where: {
+                oauthProvider: provider,
+                oauthId: oauthId
+            }
+        })
+    }
+
+    async updateOAuthData(userId, data) {
+        const user = await Users.findByPk(userId)
+        if (!user) return null
+
+        await user.update({
+            oauthProvider: data.oauthProvider,
+            oauthId: data.oauthId
+        })
+        return user
+    }
+
+    async createOAuthUser(data) {
+        return await Users.sequelize.transaction(async (t) => {
+            const userData = await Users.create({
+                email: data.email,
+                oauthProvider: data.oauthProvider,
+                oauthId: data.oauthId,
+                isActivated: data.isActivated ?? true,
+                role: data.role ?? 'USER'
+            }, { transaction: t })
+
+            if (data.firstName || data.lastName || data.avatarUrl) {
+                await Profiles.create({
+                    userId: userData.id,
+                    firstName: data.firstName,
+                    lastName: data.lastName,
+                    avatarUrl: data.avatarUrl
+                }, { transaction: t })
+            }
+
+            return userData
+        })
+    }
+
+    async findSimilar(email, phoneNumber) {
+        return await Users.findOne({
             where: {
                 [Op.or]: [
-                    {username},
-                    {email},
-                    {phoneNumber}
+                    {phoneNumber},
+                    {email}
                 ].filter(Boolean)
             }
         })
     }
 
-    async createUser(username, email, phoneNumber, hashPassword, activationLink) {
-        return await User.create({
-            username,
-            email,
-            phoneNumber,
-            passwordHash: hashPassword,
-            activationLink: activationLink,
-            role: 'USER'
-        })
-    }
+    async createUser(email, phoneNumber, hashPassword, activationLink) {
+        return await Users.sequelize.transaction(async (t) => {
+            const userData = await Users.create({
+                phoneNumber,
+                email,
+                passwordHash: hashPassword,
+                activationLink: activationLink,
+                role: 'USER'
+            }, { transaction: t })
 
-    async existsUser(identifier) {
-        return await User.findOne({
-            where: {
-                [Op.or]: [
-                    {username: identifier},
-                    {email: identifier},
-                    {phoneNumber: identifier}
-                ]
-            }
+            await Profiles.create({
+                userId: userData.id,
+            }, { transaction: t })
+
+            return userData
         })
     }
 
     async activateUser(activationLink) {
-        return await User.findOne({
+        return await Users.findOne({
             where: {
                 activationLink
             }
@@ -47,7 +89,11 @@ class UserRepository {
     }
 
     async updateData(userData, data) {
-        await userData.update(data)
+        await userData.updateCategory(data)
+    }
+
+    async findUserPk(userId) {
+        return await Users.findByPk(userId)
     }
 }
 

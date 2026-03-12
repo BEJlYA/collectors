@@ -1,27 +1,24 @@
-const {validationResult} = require('express-validator')
 const AuthService = require('../services/authService')
-const ApiError = require('../exeptions/appError')
+const ResponseFormatter = require('../utils/ResponseFormatter')
 
 class AuthController {
     async registration(req, res, next) {
         try {
-            const errors = validationResult(req)
+            const {email, phoneNumber, password} = req.body
 
-            if (!errors.isEmpty()) {
-                return next(ApiError.BadRequest('Ошибка при валидации:', errors.array()))
-            }
+            const userData = await AuthService.registration({email, phoneNumber, password})
 
-            const {username, password, phoneNumber, email} = req.body
-
-            const userData = await AuthService.registration({username, password, phoneNumber, email})
-
-            res.cookie('refreshToken', userData.refreshToken, {maxAge: 30*24*60*60*1000, httpOnly: true})
-            return res.json({
-                message: 'Пользователь создан!',
-                accessToken: userData.accessToken,
-                refreshToken: userData.refreshToken,
-                user: userData.user
+            res.cookie('refreshToken', userData.refreshToken, {
+                maxAge: 30 * 24 * 60 * 60 * 1000,
+                httpOnly: true,
+                sameSite: 'strict',
+                secure: process.env.NODE_ENV === 'production'
             })
+
+            ResponseFormatter.success(res, {
+                accessToken: userData.accessToken,
+                user: userData.userDto
+            }, 201)
         } catch (e) {
             next(e)
         }
@@ -29,25 +26,39 @@ class AuthController {
 
     async login(req, res, next) {
         try {
-            const errors = validationResult(req)
-
-            if (!errors.isEmpty()) {
-                return next(ApiError.BadRequest('Ошибка при валидации:', errors.array()))
-            }
-
             const {identifier, password} = req.body
 
             const userData = await AuthService.login(identifier, password)
 
-            res.cookie('refreshToken', userData.refreshToken, {maxAge: 30*24*60*60*1000, httpOnly: true})
-            return res.json({
-                message: 'Успешная авторизация!',
-                accessToken: userData.accessToken,
-                refreshToken: userData.refreshToken,
-                user: userData.user
+            res.cookie('refreshToken', userData.refreshToken, {
+                maxAge: 30 * 24 * 60 * 60 * 1000,
+                httpOnly: true,
+                sameSite: 'strict',
+                secure: process.env.NODE_ENV === 'production'
             })
+
+            ResponseFormatter.success(res, {
+                    accessToken: userData.accessToken,
+                    user: userData.userDto
+                })
         } catch (e) {
             next(e)
+        }
+    }
+
+    async oauthCallback(req, res, next) {
+        try {
+            const { tokens } = req.user
+
+            res.cookie('refreshToken', tokens.refreshToken, {
+                maxAge: 30 * 24 * 60 * 60 * 1000,
+                httpOnly: true,
+                sameSite: 'strict'
+            })
+
+            res.redirect(`${process.env.CLIENT_URL}?accessToken=${tokens.accessToken}`)
+        } catch (err) {
+            next(err)
         }
     }
 
@@ -62,12 +73,37 @@ class AuthController {
 
     }
 
+    async refresh(req, res, next) {
+        try {
+            const userId = req.user.id
+            const userData = await AuthService.refresh(userId)
+
+            res.cookie('refreshToken', userData.refreshToken, {
+                maxAge: 30 * 24 * 60 * 60 * 1000,
+                httpOnly: true,
+                sameSite: 'strict',
+                secure: process.env.NODE_ENV === 'production'
+            })
+
+            ResponseFormatter.success(res, {
+                    accessToken: userData.accessToken,
+                    user: userData.userDto
+                })
+        } catch (e) {
+            return next(e)
+        }
+    }
+
     async logout(req, res, next) {
         try {
-            const {refreshToken} = req.cookies;
-            const tokenData = await AuthService.logout(refreshToken)
+            const userId = req.user.id
+            const tokenData = await AuthService.logout(userId)
+
             res.clearCookie('refreshToken')
-            return res.json(tokenData)
+
+            ResponseFormatter.success(res, {
+                user: tokenData
+            })
         } catch (e) {
             next(e)
     }

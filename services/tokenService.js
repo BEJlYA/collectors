@@ -6,10 +6,10 @@ class TokenService {
         const accessToken = jwt.sign(payload, process.env.JWT_ACCESS_SECRET, {expiresIn: '20m'})
         const refreshToken = jwt.sign(payload, process.env.JWT_REFRESH_SECRET, {expiresIn: '30d'})
 
-        const tokenData = await TokenRepository.getTokens(payload.id)
-
+        const tokenData = await TokenRepository.findByUserId(payload.id)
         if (tokenData) {
-            await TokenRepository.updateRefreshToken(tokenData, refreshToken)
+
+            await TokenRepository.update(tokenData, refreshToken)
             return {
                 accessToken,
                 refreshToken
@@ -24,8 +24,25 @@ class TokenService {
         }
     }
 
-    async deleteToken(refreshToken) {
-        return await TokenRepository.deleteRefreshToken(refreshToken)
+    async deleteToken(userId) {
+        const tokenData = await TokenRepository.findByUserId(userId)
+        return await TokenRepository.delete(tokenData)
+    }
+
+    validateAccessToken (token) {
+        try {
+            return jwt.verify(token, process.env.JWT_ACCESS_SECRET)
+        } catch (e) {
+            return null
+        }
+    }
+
+    validateRefreshToken (token) {
+        try {
+            return jwt.verify(token, process.env.JWT_REFRESH_SECRET)
+        } catch (e) {
+            return null
+        }
     }
 }
 

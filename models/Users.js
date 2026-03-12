@@ -1,5 +1,6 @@
 const {DataTypes, Model} = require('@sequelize/core')
 const sequelize = require('../config/database');
+const {nanoid} = require("nanoid")
 
 class Users extends Model {
 }
@@ -10,33 +11,37 @@ Users.init({
         primaryKey: true,
         autoIncrement: true
     },
-    username: {
+    phoneNumber: {
         type: DataTypes.STRING,
-        allowNull: false,
         unique: true,
-        validate: {
-            len: [3, 20]
-        }
+        columnName: 'phone_number',
+        allowNull: true
+    },
+    email: {
+        type: DataTypes.STRING,
+        allowNull: true,
+        unique: true
     },
     passwordHash: {
         type: DataTypes.STRING,
-        allowNull: false,
+        allowNull: true,
         columnName: 'password_hash'
+    },
+    oauthProvider: {
+        type: DataTypes.ENUM('google', 'yandex'),
+        allowNull: true,
+        columnName: 'oauth_provider'
+    },
+    oauthId: {
+        type: DataTypes.STRING,
+        columnName: 'oauth_id',
+        unique: true,
+        allowNull: true
     },
     role: {
         type: DataTypes.ENUM('USER', 'TECH', 'MODER', 'GARANT', 'ADMIN'),
         allowNull: false,
         defaultValue: 'USER'
-    },
-    phoneNumber: {
-        type: DataTypes.STRING,
-        unique: true,
-        columnName: 'phone_number'
-    },
-    email: {
-        type: DataTypes.STRING,
-        allowNull: false,
-        unique: true
     },
     activationLink: {
         type: DataTypes.STRING,
@@ -48,30 +53,13 @@ Users.init({
         defaultValue: false,
         columnName: 'is_activated'
     },
-    firstName: {
+    publicId: {
         type: DataTypes.STRING,
-        columnName: 'first_name'
+        unique: true,
+        allowNull: false,
+        defaultValue: () => nanoid(24),
+        columnName: 'public_id'
     },
-    lastName: {
-        type: DataTypes.STRING,
-        columnName: 'last_name'
-    },
-    geo: {
-        type: DataTypes.STRING,
-        allowNull: true
-    },
-    avatarUrl: {
-        type: DataTypes.STRING,
-        defaultValue: 'default-avatar.png',
-        columnName: 'avatar_url'
-    },
-    categories: {
-        type: DataTypes.ARRAY(DataTypes.STRING)
-    },
-    rating: {
-        type: DataTypes.DECIMAL(3, 2),
-        defaultValue: 0.00
-    }
 }, {
     sequelize,
     modelName: 'User',

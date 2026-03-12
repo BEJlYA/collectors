@@ -19,12 +19,18 @@ Bookmarks.init({
         type: DataTypes.INTEGER,
         allowNull: false,
         columnName: 'item_id'
+    },
+    createdAt: {
+        type: DataTypes.DATE,
+        defaultValue: DataTypes.NOW,
+        columnName: 'created_at'
     }
+
 }, {
     sequelize,
     modelName: 'Bookmarks',
     tableName: 'bookmarks',
-    timestamps: true
+    timestamps: false
 })
 
 module.exports = Bookmarks

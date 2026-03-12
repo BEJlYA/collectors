@@ -28,7 +28,7 @@ module.exports = class ApiError extends Error {
         return new ApiError(404, message)
     }
 
-    static Conflict(message = 'Конфликт') {
+    static Conflict(message) {
         return new ApiError(409, message)
     }
 

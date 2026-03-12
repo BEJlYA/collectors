@@ -1,0 +1,12 @@
+const { validationResult } = require('express-validator')
+const ApiError = require('../exeptions/appError')
+
+module.exports = (req, res, next) => {
+    const errors = validationResult(req)
+
+    if (!errors.isEmpty()) {
+        return next(ApiError.BadRequest('Ошибка валидации', errors.array()))
+    }
+
+    next()
+}

@@ -10,28 +10,30 @@ Collections.init({
         primaryKey: true,
         autoIncrement: true
     },
-    profileId: {
+    userId: {
         type: DataTypes.INTEGER,
         allowNull: false,
-        columnName: 'profile_id'
+        columnName: 'user_id'
     },
-    itemName: {
+    name: {
         type: DataTypes.STRING,
-        columnName: 'item_name',
-        defaultValue: 'Not defined'
+        columnName: 'name',
+        defaultValue: 'New collection'
     },
-    description: {
-        type: DataTypes.TEXT
+    categoryTypeId: {
+        type: DataTypes.INTEGER,
+        defaultValue: 0,
+        columnName: 'category_type_id'
     },
-    isForTrade: {
+    isPublic: {
         type: DataTypes.BOOLEAN,
-        defaultValue: false
+        defaultValue: false,
+        columnName: 'is_public'
     }
 }, {
     sequelize,
     modelName: 'Collections',
-    tableName: 'collections',
-    timestamps: true
+    tableName: 'collections'
 })
 
 module.exports = Collections

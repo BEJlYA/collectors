@@ -1,25 +1,49 @@
 const express = require('express')
+const morgan = require('morgan')
+const helmet = require('helmet')
 const cookieParser = require('cookie-parser')
 const cors = require('cors')
-require('dotenv').config({path: require('path').join(__dirname, './.env')})
+const RateLimitMiddleware = require('./middleware/rateLimitMiddleware')
+const path = require('path')
+const dotenv = require('dotenv')
+const passport = require('./strategies')
 const models = require('./models')
 const sequelize = models.sequelize
 const authRoute = require('./routes/authRoutes.js')
-const profileRoutes = require('./routes/profileRoutes')
+const categoryRoutes = require('./routes/categoryRoutes')
+const collectionsRoutes = require('./routes/collectionsRoutes')
+const bookmarksRouter = require('./routes/bookmarksRoutes')
 const ErrorMiddleware = require('./middleware/errorMiddleware')
 
-const app = express()
+dotenv.config({
+    path: path.join(__dirname, '.env')
+})
 
+const app = express()
+const PORT = process.env.PORT || 3000
+
+app.use(morgan('dev')) //combined
+app.use(helmet())
 app.use(express.json())
 app.use(cookieParser())
-app.use(cors())
+app.use(cors({
+    origin: process.env.CLIENT_URL || 'http://localhost:3000',
+    credentials: true
+}))
 
-app.use('/api/auth', authRoute)
-app.use('/api/profiles', profileRoutes)
+app.use('/api/', RateLimitMiddleware.api())
+app.use(passport.initialize())
+
+app.use('/api/v1/auth', authRoute)
+app.use('/api/v1/users/')
+app.use('/api/v1/category', categoryRoutes)
+app.use('/api/v1/collections', collectionsRoutes)
+app.use('/api/v1/bookmarks', bookmarksRouter)
+
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')))
 
 app.use(ErrorMiddleware)
 
-const PORT = process.env.PORT || 3000
 
 // { alter: true } - обновляет структуру, сохраняя данные
 // { force: true } - пересоздаёт таблицы (ВСЕ ДАННЫЕ ПРОПАДУТ!)
