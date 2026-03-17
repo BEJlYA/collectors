@@ -1,4 +1,4 @@
-const models = require('../models')
+const models = require('../config/associations')
 const ItemPhotos = models.ItemPhotos
 
 class PhotosRepository {
@@ -27,6 +27,13 @@ class PhotosRepository {
                 isPrimary: data.isPrimary,
                 sortOrder: data.sortOrder
             }
+        })
+    }
+
+    async update(model, isPrimary, sortOrder) {
+        return await model.update({
+            isPrimary,
+            sortOrder
         })
     }
 

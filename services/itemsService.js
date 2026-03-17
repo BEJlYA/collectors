@@ -1,5 +1,5 @@
 const ItemsRepository = require('../repository/itemsRepository')
-const ApiError = require("../exeptions/appError")
+const ApiError = require("../exceptions/appError")
 const { ItemDto, ListItemDto } = require('../dtos/itemDto')
 
 class ItemsService {

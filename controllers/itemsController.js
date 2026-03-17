@@ -1,6 +1,5 @@
 const ItemsService = require("../services/itemsService")
-const ResponseFormatter = require("../utils/ResponseFormatter")
-const ItemDto = require('../dtos/itemDto')
+const ResponseFormatter = require("../utils/responseFormatter")
 
 class ItemsController {
     async getAll(req, res, next) {
@@ -29,7 +28,7 @@ class ItemsController {
         }
     }
 
-    async upload(req, res, next) {
+    async create(req, res, next) {
         try {
             const collectionId = req.params.collectionId
             const {name, description, isForTrade} = req.body

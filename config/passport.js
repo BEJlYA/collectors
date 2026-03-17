@@ -1,6 +1,6 @@
 const passport = require('passport')
-const GoogleStrategy = require('./googleStrategy')
-const YandexStrategy = require('./yandexStrategy')
+const GoogleStrategy = require('../strategies/googleStrategy')
+const YandexStrategy = require('../strategies/yandexStrategy')
 
 passport.use('google', GoogleStrategy)
 passport.use('yandex', YandexStrategy)

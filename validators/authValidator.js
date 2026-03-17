@@ -31,7 +31,6 @@ class AuthValidator {
                 .trim()
                 .escape(),
             body('password')
-                .optional()
                 .isLength({min: 5, max: 30}).withMessage('Пароль должен иметь длину более 5 символов и не более 30')
                 .trim()
                 .escape()

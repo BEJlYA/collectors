@@ -1,4 +1,4 @@
-class UserDto {
+class AuthDto {
     constructor(model) {
         this.id = model.id
         this.phoneNumber = model.phoneNumber
@@ -8,4 +8,4 @@ class UserDto {
     }
 }
 
-module.exports = UserDto
+module.exports = AuthDto

@@ -1,3 +1,5 @@
+const { PhotoDto } = require("./photoDto")
+
 class ItemDto {
     constructor(model) {
         this.id = model.id
@@ -6,11 +8,7 @@ class ItemDto {
         this.description = model.description
         this.createdAt = model.createdAt
 
-        this.photos = model.photos?.map(photo => ({
-            id: photo.id,
-            url: photo.photoUrl,
-            isPrimary: photo.isPrimary
-        })) || []
+        this.photos = model.photos?.map(photo => new PhotoDto(photo)) || []
     }
 }
 

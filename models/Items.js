@@ -21,10 +21,6 @@
         },
         description: {
             type: DataTypes.TEXT
-        },
-        isForTrade: {
-            type: DataTypes.BOOLEAN,
-            defaultValue: false
         }
     }, {
         sequelize,

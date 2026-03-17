@@ -1,5 +1,5 @@
 const AuthService = require('../services/authService')
-const ResponseFormatter = require('../utils/ResponseFormatter')
+const ResponseFormatter = require('../utils/responseFormatter')
 
 class AuthController {
     async registration(req, res, next) {

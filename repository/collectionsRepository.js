@@ -1,6 +1,5 @@
-const models = require('../models')
-const {Profiles, Category, Items, ItemPhotos} = require("../models");
-const Collections = models.Collections
+const models = require('../config/associations')
+const {Collections, Profiles, Category, Items, ItemPhotos} = models.Collections
 
 class CollectionsRepository {
     async findAll(userId){
@@ -10,11 +9,6 @@ class CollectionsRepository {
                     userId
                 },
                 include: [
-                    {
-                        model: Profiles,
-                        as: 'profile',
-                        attributes: ['userId', 'firstName', 'lastName', 'avatarUrl']
-                    },
                     {
                         model: Category,
                         as: 'categoryType',
@@ -51,11 +45,6 @@ class CollectionsRepository {
             },
             include: [
                 {
-                    model: Profiles,
-                    as: 'profiles',
-                    attributes: ['userId', 'firstName', 'lastName', 'avatarUrl']
-                },
-                {
                     model: Category,
                     as: 'categoryType',
                     attributes: ['id', 'displayName']
@@ -76,12 +65,10 @@ class CollectionsRepository {
 
     async createCollection(userId, data) {
         return await Collections.create({
-            where: {
-                userId,
-                name: data.name,
-                categoryTypeId: data.categoryTypeId,
-                isPublic: data.isPublic ?? true
-            }
+            userId,
+            name: data.name,
+            categoryTypeId: data.categoryTypeId,
+            isPublic: data.isPublic ?? true
         })
     }
 
@@ -90,7 +77,7 @@ class CollectionsRepository {
     }
 
     async updateCollection(collectionData, data) {
-        return await collectionData.updateCategory({
+        return await collectionData.update({
             name: data.name,
             categoryTypeId: data.categoryTypeId,
             isPublic: data.isPublic

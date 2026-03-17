@@ -1,4 +1,4 @@
-const models = require('../models')
+const models = require('../config/associations')
 const {Op} = require('sequelize');
 const Category = models.Category
 
@@ -32,7 +32,7 @@ class CategoryRepository {
     }
 
     async updateCategory(categoryData, data) {
-        return await categoryData.updateCategory(data)
+        return await categoryData.update(data)
     }
 
     async deleteCategory(categoryData) {

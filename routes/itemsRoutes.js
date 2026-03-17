@@ -26,7 +26,7 @@ router.get('/:itemId',
 router.post('/',
     itemsValidator.data(),
     ValidateMiddleware,
-    itemsController.upload)
+    itemsController.create)
 
 router.put('/:itemId',
     itemsValidator.data(),

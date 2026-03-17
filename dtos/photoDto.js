@@ -6,11 +6,11 @@ class PhotoDto {
     }
 }
 
-class ListPhotoDto extends PhotoDto {
+class ExtendedPhotoDto extends PhotoDto {
     constructor(model) {
         super(model)
         this.isPrimary = model.isPrimary
         this.sortOrder = model.sortOrder
     }
 }
-module.exports = {PhotoDto, ListPhotoDto}
+module.exports = {PhotoDto, ExtendedPhotoDto}

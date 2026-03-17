@@ -1,6 +1,6 @@
 const {Router} = require('express')
 const router = Router()
-const RateLimitMiddleware = require('../middleware/rateLimitMiddleware')
+const RateLimitMiddleware = require('../middleware/limitMiddleware')
 const AuthMiddleware = require('../middleware/authMiddleware')
 const photosValidator = require('../validators/photosValidator')
 const ResourcesMiddleware = require('../middleware/resourcesMiddleware')
@@ -32,6 +32,12 @@ router.post('/',
     ValidateMiddleware,
     photosController.upload
 )
+
+router.put('/:photoId',
+    photosValidator.update(),
+    ValidateMiddleware,
+    photosController.update
+    )
 
 router.delete('/:photoId',
     ValidateMiddleware,

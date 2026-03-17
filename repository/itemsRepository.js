@@ -1,6 +1,5 @@
-const models = require('../models')
-const {Collections, Users, ItemPhotos} = require("../models");
-const Items = models.Items
+const models = require('../config/associations')
+const {Items, ItemPhotos} = models.Items
 
 class ItemsRepository {
     async findByPk(itemId) {
@@ -53,7 +52,7 @@ class ItemsRepository {
     }
 
     async updateItem(itemData, data) {
-        return await itemData.updateCategory(data)
+        return await itemData.update(data)
     }
 
     async deleteItem(itemData) {

@@ -10,15 +10,15 @@ Feedbacks.init({
         primaryKey: true,
         autoIncrement: true
     },
-    fromUser: {
+    fromUserId: {
         type: DataTypes.INTEGER,
         allowNull: false,
-        columnName: 'from_user'
+        columnName: 'from_user_id'
     },
-    targetUser: {
+    targetUserId: {
         type: DataTypes.INTEGER,
         allowNull: false,
-        columnName: 'target_user'
+        columnName: 'target_user_id'
     },
     initiatorType:{
         type: DataTypes.ENUM('SELLER', 'BUYER'),
@@ -44,13 +44,13 @@ Feedbacks.init({
     }
 }, {
     sequelize,
-    modelName: 'Reviews',
-    tableName: 'reviews',
+    modelName: 'Feedbacks',
+    tableName: 'feedbacks',
     timestamps: false,
     indexes: [
         {
             unique: true,
-            fields: ['from_user', 'target_user']
+            fields: ['from_user_id', 'target_user_id']
         }
     ]
 })

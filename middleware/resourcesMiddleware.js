@@ -1,9 +1,6 @@
-const ApiError = require('../exeptions/appError')
-const models = require('../models')
-const { Collection, Item, Photo } = models
+const ApiError = require('../exceptions/appError')
 const CollectionsRepository = require('../repository/collectionsRepository')
 const ItemsRepository = require('../repository/itemsRepository')
-const PhotosRepository = require('../repository/photosRepository')
 
 module.exports = {
     collection: async (req, res, next) => {

@@ -11,7 +11,7 @@ const imageQueue = new Queue('image', {
 })
 
 imageQueue.process('processImage', async (job) => {
-    const { path: filePath, fileName, itemId } = job.data
+    const { path: filePath, fileName} = job.data
 
     await sharp(filePath)
         .resize(300, 300)

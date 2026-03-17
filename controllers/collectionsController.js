@@ -1,5 +1,5 @@
 const CollectionsService = require('../services/collectionsService')
-const ResponseFormatter = require("../utils/ResponseFormatter");
+const ResponseFormatter = require("../utils/responseFormatter");
 
 class CollectionsController {
     async getAll(req, res, next) {
@@ -29,7 +29,7 @@ class CollectionsController {
         }
     }
 
-    async upload(req, res, next) {
+    async create(req, res, next) {
         try {
             const userId = req.user.id
             const {name, categoryTypeId, isPublic} = req.body

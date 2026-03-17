@@ -1,12 +1,25 @@
-const models = require('../models')
-const Bookmarks = models.Bookmarks
+const models = require('../config/associations')
+const {Bookmarks, Items, ItemPhotos} = models.Bookmarks
 
 class BookmarksRepository {
     async getAll(userId) {
         return await Bookmarks.findAll({
             where: {
                 userId
-            }
+            },
+            include: [
+                {
+                    model: Items,
+                    as: 'items',
+                    attributes: ['id', 'name', 'description'],
+                    include: [{
+                        model: ItemPhotos,
+                        as: 'photos',
+                        attributes: ['id', 'photoUrl', 'isPrimary'],
+                        limit: 1
+                    }]
+                }
+            ]
         })
     }
 
@@ -15,7 +28,20 @@ class BookmarksRepository {
             where: {
                 id: bookmarkId,
                 userId
-            }
+            },
+            include: [
+                {
+                    model: Items,
+                    as: 'items',
+                    attributes: ['id', 'name', 'description'],
+                    include: [{
+                        model: ItemPhotos,
+                        as: 'photos',
+                        attributes: ['id', 'photoUrl', 'isPrimary'],
+                        limit: 1
+                    }]
+                }
+            ]
         })
     }
 

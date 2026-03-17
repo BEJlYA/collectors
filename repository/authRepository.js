@@ -1,9 +1,8 @@
+const models = require('../config/associations')
+const {Users, Profiles} = models.Users
 const {Op} = require('sequelize')
-const models = require('../models')
-const Users = models.Users
-const Profiles = models.Profiles
 
-class UserRepository {
+class AuthRepository {
     async findByEmail(email) {
         return await Users.findOne({ where: { email }})
     }
@@ -51,7 +50,7 @@ class UserRepository {
         })
     }
 
-    async findSimilar(email, phoneNumber) {
+    async findExisting(email, phoneNumber) {
         return await Users.findOne({
             where: {
                 [Op.or]: [
@@ -89,7 +88,7 @@ class UserRepository {
     }
 
     async updateData(userData, data) {
-        await userData.updateCategory(data)
+        await userData.update(data)
     }
 
     async findUserPk(userId) {
@@ -97,4 +96,4 @@ class UserRepository {
     }
 }
 
-module.exports = new UserRepository()
+module.exports = new AuthRepository()

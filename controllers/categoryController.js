@@ -1,5 +1,5 @@
 const CategoryService = require('../services/categoryService')
-const ResponseFormatter = require("../utils/ResponseFormatter");
+const ResponseFormatter = require("../utils/responseFormatter");
 
 class CategoryController {
     async getAll(req, res, next) {
@@ -28,7 +28,7 @@ class CategoryController {
         }
     }
 
-    async upload(req, res, next) {
+    async create(req, res, next) {
         try {
             const {name, displayName, description, isActive} = req.body
 

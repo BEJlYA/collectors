@@ -1,5 +1,5 @@
 const CategoryRepository = require('../repository/categoryRepository')
-const ApiError = require('../exeptions/appError')
+const ApiError = require('../exceptions/appError')
 const CategoryDto = require('../dtos/categoryDto')
 
 class CategoryService {

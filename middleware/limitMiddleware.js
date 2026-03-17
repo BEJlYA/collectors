@@ -33,7 +33,7 @@ class RateLimit {
     upload() {
         return rateLimit({
             windowMs: 60 * 60 * 1000,
-            max: 50,
+            max: 100,
             message: {
                 status: 'error',
                 message: 'Слишком много загрузок. Подождите час'

@@ -1,4 +1,4 @@
-const models = require('../models')
+const models = require('../config/associations')
 const Tokens = models.Tokens
 
 class TokenRepository {
@@ -14,7 +14,7 @@ class TokenRepository {
     }
 
     async update(tokenData, refreshToken) {
-        await tokenData.updateCategory({refreshToken})
+        await tokenData.update({refreshToken})
     }
 
     async delete(tokenData) {

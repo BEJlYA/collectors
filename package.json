@@ -26,7 +26,6 @@
     "morgan": "^1.10.1",
     "nanoid": "^5.1.6",
     "nodemailer": "^8.0.1",
-    "nodemon": "^3.1.11",
     "oauth": "^0.10.2",
     "passport": "^0.7.0",
     "passport-google-oauth20": "^2.0.0",
@@ -36,5 +35,18 @@
     "sequelize": "^6.37.7",
     "sharp": "^0.34.5",
     "uuid": "^13.0.0"
-  }
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.14"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/BEJlYA/collectors.git"
+  },
+  "author": "BEJlYA",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/BEJlYA/collectors/issues"
+  },
+  "homepage": "https://github.com/BEJlYA/collectors#readme"
 }

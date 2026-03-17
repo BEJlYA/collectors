@@ -1,6 +1,7 @@
 const BookmarksRepository = require('../repository/bookmarksRepository')
 const ItemsRepository = require('../repository/itemsRepository')
-const ApiError = require('../exeptions/appError')
+const ApiError = require('../exceptions/appError')
+const BookmarkDto = require('../dtos/bookmarkDto')
 
 class BookmarksService {
     async getAll(userId) {
@@ -10,7 +11,7 @@ class BookmarksService {
             return ApiError.Conflict('У вас нет закладок')
         }
 
-        return bookmarksData
+        return new bookmarksData.map(bookmarksData => new BookmarkDto(bookmarksData))
     }
 
     async create(userId, itemId) {
@@ -26,7 +27,7 @@ class BookmarksService {
             return ApiError.Conflict('У вас уже существует такая закладка')
         }
 
-        return bookmarksData
+        return new BookmarkDto(bookmarksData)
     }
 
     async delete(bookmarkId, userId) {

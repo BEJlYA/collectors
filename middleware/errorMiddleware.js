@@ -1,5 +1,5 @@
-const ApiError = require('../exeptions/appError')
-const ResponseFormatter = require('../utils/ResponseFormatter')
+const ApiError = require('../exceptions/appError')
+const ResponseFormatter = require('../utils/responseFormatter')
 
 module.exports = function (err, req, res, next) {
     if (err instanceof ApiError) {

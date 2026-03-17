@@ -1,6 +1,6 @@
 const PhotosService = require("../services/photosService")
-const ResponseFormatter = require("../utils/ResponseFormatter")
-const ApiError = require('../exeptions/appError')
+const ResponseFormatter = require("../utils/responseFormatter")
+const ApiError = require('../exceptions/appError')
 
 class PhotosController {
     async getAll(req, res, next) {
@@ -44,6 +44,26 @@ class PhotosController {
             const photosData = await PhotosService.upload({
                 itemId,
                 files,
+                isPrimary: isPrimary === 'true',
+                sortOrder: Number(sortOrder) || 0
+            })
+
+            ResponseFormatter.success(res, {
+                photos: photosData
+            }, 201)
+        } catch (e) {
+            return next(e)
+        }
+    }
+
+    async update(req, res, next) {
+        try {
+            const {itemId, photoId} = req.params
+            const {isPrimary, sortOrder} = req.body
+
+            const photosData = await PhotosService.update({
+                itemId,
+                photoId,
                 isPrimary: isPrimary === 'true',
                 sortOrder: Number(sortOrder) || 0
             })

@@ -1,5 +1,5 @@
 const CollectionsRepository = require('../repository/collectionsRepository')
-const ApiError = require("../exeptions/appError")
+const ApiError = require("../exceptions/appError")
 const CollectionDto = require('../dtos/collectionDto')
 
 class CollectionsService {

@@ -13,7 +13,7 @@ class CollectionValidator {
             body('name')
                 .isLength({min: 5, max: 30}).withMessage('Имя коллекции не может быть меньше 5 и более 30 символов')
                 .notEmpty().withMessage('Имя коллекции не может быть пустым')
-                .matches(/^[a-zA-Zа-яА-Я0-9\s\-]+$/).withMessage('Имя может содержать буквы, цифры, пробелы и дефисы')
+                .matches(/^[a-zA-Zа-яА-Я0-9\s\-_]+$/).withMessage('Имя может содержать буквы, цифры, пробелы, дефисы и подчеркивания')
                 .trim()
                 .escape(),
             body('categoryTypeId')

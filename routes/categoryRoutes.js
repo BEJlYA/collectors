@@ -23,7 +23,7 @@ router.post('/',
     RoleMiddleware(['ADMIN']),
     CategoryValidator.data(),
     ValidateMiddleware,
-    CategoryController.upload
+    CategoryController.create
 )
 
 router.put('/:id',

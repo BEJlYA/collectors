@@ -29,8 +29,13 @@ Profiles.init({
         defaultValue: 'default-avatar.png',
         columnName: 'avatar_url'
     },
-    geo: {
-        type: DataTypes.STRING
+    city: {
+        type: DataTypes.STRING,
+        allowNull: true
+    },
+    country: {
+        type: DataTypes.STRING,
+        allowNull: true
     },
     rating: {
         type: DataTypes.DECIMAL(3, 2),

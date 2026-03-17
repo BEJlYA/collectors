@@ -1,11 +1,11 @@
 const bcrypt = require('bcrypt')
 const {v4: uuid} = require('uuid')
 const TokenService = require('../services/TokenService')
-const UserRepository = require('../repository/UserRepository')
+const AuthRepository = require('../repository/authRepository')
 const mailQueue = require('../workers/mailQueue')
 const TokenRepository = require('../repository/tokenRepository')
-const UserDto = require('../dtos/userDto')
-const ApiError = require('../exeptions/appError')
+const AuthDto = require('../dtos/authDto')
+const ApiError = require('../exceptions/appError')
 
 class AuthService {
     async registration(data) {
@@ -15,7 +15,7 @@ class AuthService {
             throw ApiError.BadRequest('Укажите email или номер телефона')
         }
 
-        const existingUser = await UserRepository.findSimilar(
+        const existingUser = await AuthRepository.findExisting(
             email || null,
             phoneNumber || null
         )
@@ -32,7 +32,7 @@ class AuthService {
         const hashPassword = bcrypt.hashSync(password, 7)
         const activationLink = uuid()
 
-        const userData = await UserRepository.createUser(
+        const userData = await AuthRepository.createUser(
             email || null,
             phoneNumber || null,
             hashPassword,
@@ -46,7 +46,7 @@ class AuthService {
             })
         }
 
-        const userDto = new UserDto(userData)
+        const userDto = new AuthDto(userData)
         const {accessToken, refreshToken} = await TokenService.generateTokens({
             id: userData.id,
             role: userData.role
@@ -60,13 +60,13 @@ class AuthService {
     }
 
     async login(identifier, password) {
-        const userData = await UserRepository.findSimilar(identifier, identifier)
+        const userData = await AuthRepository.findExisting(identifier, identifier)
 
         if (!userData || !await bcrypt.compare(password, userData.passwordHash)) {
             throw ApiError.BadRequest('Неверные данные')
         }
 
-        const userDto = new UserDto(userData)
+        const userDto = new AuthDto(userData)
         const {accessToken, refreshToken} = await TokenService.generateTokens({
             id: userData.id,
             role: userData.role
@@ -89,13 +89,13 @@ class AuthService {
             throw ApiError.BadRequest('Email не предоставлен провайдером')
         }
 
-        let userData = await UserRepository.findByOAuth(provider, profile.id)
+        let userData = await AuthRepository.findByOAuth(provider, profile.id)
 
         if (!userData) {
-            userData = await UserRepository.findByEmail(email)
+            userData = await AuthRepository.findByEmail(email)
 
             if (userData) {
-                userData = await UserRepository.updateOAuthData(userData.id, {
+                userData = await AuthRepository.updateOAuthData(userData.id, {
                     oauthProvider: provider,
                     oauthId: profile.id
                 })
@@ -103,7 +103,7 @@ class AuthService {
         }
 
         if (!userData) {
-            userData = await UserRepository.createOAuthUser({
+            userData = await AuthRepository.createOAuthUser({
                 email,
                 oauthProvider: provider,
                 oauthId: profile.id,
@@ -115,7 +115,7 @@ class AuthService {
             })
         }
 
-        const userDto = new UserDto(userData)
+        const userDto = new AuthDto(userData)
         const {accessToken, refreshToken} = await TokenService.generateTokens({
             id: userData.id,
             role: userData.role
@@ -129,13 +129,13 @@ class AuthService {
     }
     
     async activate(activationLink) {
-        const userData = await UserRepository.activateUser(activationLink)
+        const userData = await AuthRepository.activateUser(activationLink)
 
         if (!userData) {
             throw ApiError.NotFound('Ошибка активации профиля')
         }
 
-        await UserRepository.updateData(userData, {isActivated: true})
+        await AuthRepository.updateData(userData, {isActivated: true})
     }
 
     async refresh(userId) {
@@ -145,8 +145,8 @@ class AuthService {
             throw ApiError.UnauthorizedError('Refresh токен отозван')
         }
 
-        const userData = await UserRepository.findUserPk(userId)
-        const userDto = new UserDto(userData)
+        const userData = await AuthRepository.findUserPk(userId)
+        const userDto = new AuthDto(userData)
         const {accessToken, refreshToken} = await TokenService.generateTokens({...userDto})
 
         return {

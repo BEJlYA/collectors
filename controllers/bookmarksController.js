@@ -1,5 +1,5 @@
 const BookmarkService = require('../services/bookmarksService')
-const ResponseFormatter = require("../utils/ResponseFormatter");
+const ResponseFormatter = require("../utils/responseFormatter");
 
 class BookmarksController {
     async getAll(req, res, next) {

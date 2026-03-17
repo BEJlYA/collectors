@@ -3,21 +3,20 @@ const morgan = require('morgan')
 const helmet = require('helmet')
 const cookieParser = require('cookie-parser')
 const cors = require('cors')
-const RateLimitMiddleware = require('./middleware/rateLimitMiddleware')
+const RateLimitMiddleware = require('./middleware/limitMiddleware')
 const path = require('path')
-const dotenv = require('dotenv')
-const passport = require('./strategies')
-const models = require('./models')
+require('dotenv').config({ path: path.join(__dirname, './config/.env') })
+const passport = require('./config/passport')
+const models = require('./config/associations')
 const sequelize = models.sequelize
 const authRoute = require('./routes/authRoutes.js')
+const profileRoute = require('./routes/profileRoutes')
+const feedbackRoutes = require('./routes/feedbackRoutes')
 const categoryRoutes = require('./routes/categoryRoutes')
 const collectionsRoutes = require('./routes/collectionsRoutes')
-const bookmarksRouter = require('./routes/bookmarksRoutes')
+const bookmarksRoutes = require('./routes/bookmarksRoutes')
 const ErrorMiddleware = require('./middleware/errorMiddleware')
 
-dotenv.config({
-    path: path.join(__dirname, '.env')
-})
 
 const app = express()
 const PORT = process.env.PORT || 3000
@@ -35,10 +34,11 @@ app.use('/api/', RateLimitMiddleware.api())
 app.use(passport.initialize())
 
 app.use('/api/v1/auth', authRoute)
-app.use('/api/v1/users/')
+app.use('/api/v1/profile/', profileRoute)
+app.use('/api/v1/feedback', feedbackRoutes)
 app.use('/api/v1/category', categoryRoutes)
 app.use('/api/v1/collections', collectionsRoutes)
-app.use('/api/v1/bookmarks', bookmarksRouter)
+app.use('/api/v1/bookmarks', bookmarksRoutes)
 
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')))
 

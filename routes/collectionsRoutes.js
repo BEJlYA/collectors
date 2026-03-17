@@ -20,7 +20,7 @@ router.get('/:collectionId',
 router.post('/',
     CollectionValidator.data(),
     ValidateMiddleware,
-    CollectionsController.upload)
+    CollectionsController.create)
 
 router.put('/:collectionId',
     CollectionValidator.id(),
