@@ -1,4 +1,4 @@
-const ApiError = require('../exceptions/appError')
+const ApiError = require('../exceptions/apiError')
 const ResponseFormatter = require('../utils/responseFormatter')
 
 module.exports = function (err, req, res, next) {

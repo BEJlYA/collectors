@@ -13,4 +13,4 @@ module.exports = new YandexStrategy({
         } catch (err) {
             return done(err, null)
         }
-})
+    })

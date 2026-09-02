@@ -1,13 +1,13 @@
-const PhotosService = require("../services/photosService")
+const PhotosItemsService = require("../services/photosItemsService")
 const ResponseFormatter = require("../utils/responseFormatter")
-const ApiError = require('../exceptions/appError')
+const ApiError = require('../exceptions/apiError')
 
-class PhotosController {
+class PhotosItemsController {
     async getAll(req, res, next) {
         try {
             const {collectionId, itemId} = req.params
 
-            const photosData = await PhotosService.getAll(collectionId, itemId)
+            const photosData = await PhotosItemsService.getAll(collectionId, itemId)
 
             ResponseFormatter.success(res, {
                 photos: photosData
@@ -21,7 +21,7 @@ class PhotosController {
         try {
             const {collectionId, itemId, photoId} = req.params
 
-            const photosData = await PhotosService.getOne(collectionId, itemId, photoId)
+            const photosData = await PhotosItemsService.getOne(collectionId, itemId, photoId)
 
             ResponseFormatter.success(res, {
                 photos: photosData
@@ -41,7 +41,7 @@ class PhotosController {
                 return next(ApiError.BadRequest('Файлы не загружены'))
             }
 
-            const photosData = await PhotosService.upload({
+            const photosData = await PhotosItemsService.upload({
                 itemId,
                 files,
                 isPrimary: isPrimary === 'true',
@@ -61,7 +61,7 @@ class PhotosController {
             const {itemId, photoId} = req.params
             const {isPrimary, sortOrder} = req.body
 
-            const photosData = await PhotosService.update({
+            const photosData = await PhotosItemsService.update({
                 itemId,
                 photoId,
                 isPrimary: isPrimary === 'true',
@@ -80,7 +80,7 @@ class PhotosController {
         try {
             const {collectionId, itemId, photoId} = req.params
 
-            await PhotosService.delete({
+            await PhotosItemsService.delete({
                 collectionId,
                 itemId,
                 photoId
@@ -93,4 +93,4 @@ class PhotosController {
     }
 }
 
-module.exports = new PhotosController()
+module.exports = new PhotosItemsController()

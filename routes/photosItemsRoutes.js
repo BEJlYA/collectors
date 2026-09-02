@@ -2,14 +2,15 @@ const {Router} = require('express')
 const router = Router()
 const RateLimitMiddleware = require('../middleware/limitMiddleware')
 const AuthMiddleware = require('../middleware/authMiddleware')
-const photosValidator = require('../validators/photosValidator')
+const PhotosItemsValidator = require('../validators/photosItemValidator')
 const ResourcesMiddleware = require('../middleware/resourcesMiddleware')
 const OwnerMiddleware = require('../middleware/ownerMiddleware')
 const ValidateMiddleware = require("../middleware/validateMiddleware")
-const photosController = require('../controllers/photosController')
+const PhotosItemsController = require('../controllers/photosItemsController')
+
 
 router.use(AuthMiddleware)
-router.use(photosValidator.ids())
+router.use(PhotosItemsValidator.ids())
 router.use(ResourcesMiddleware.collection)
 router.use(OwnerMiddleware('collection'))
 router.use(ResourcesMiddleware.item)
@@ -18,30 +19,30 @@ router.use(OwnerMiddleware('item'))
 
 router.get('/',
     ValidateMiddleware,
-    photosController.getAll
+    PhotosItemsController.getAll
 )
 
 router.get('/:photoId',
     ValidateMiddleware,
-    photosController.getOne
+    PhotosItemsController.getOne
 )
 
 router.post('/',
     RateLimitMiddleware.upload(),
-    photosValidator.data(),
+    PhotosItemsValidator.data(),
     ValidateMiddleware,
-    photosController.upload
+    PhotosItemsController.upload
 )
 
 router.put('/:photoId',
-    photosValidator.update(),
+    PhotosItemsValidator.update(),
     ValidateMiddleware,
-    photosController.update
-    )
+    PhotosItemsController.update
+)
 
 router.delete('/:photoId',
     ValidateMiddleware,
-    photosController.delete
+    PhotosItemsController.delete
 )
 
 module.exports = router

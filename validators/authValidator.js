@@ -4,7 +4,7 @@ class AuthValidator {
     login() {
         return [
             body('identifier')
-                .notEmpty().withMessage('Укажите логин, email, или номер телефона'),
+                .notEmpty().withMessage('Укажите email, или номер телефона'),
             body('password')
                 .notEmpty().withMessage('Пароль не может быть пустым'),
         ]
@@ -12,7 +12,7 @@ class AuthValidator {
 
     registration() {
         return [
-            body().custom((value, { req }) => {
+            body().custom((value, {req}) => {
                 if (!req.body.phoneNumber && !req.body.email) {
                     throw new Error('Укажите телефон или email')
                 }

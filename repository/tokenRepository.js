@@ -18,7 +18,7 @@ class TokenRepository {
     }
 
     async delete(tokenData) {
-        return await tokenData.destroy()
+        await tokenData.destroy()
     }
 }
 

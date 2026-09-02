@@ -1,9 +1,9 @@
 const models = require('../config/associations')
 const ItemPhotos = models.ItemPhotos
 
-class PhotosRepository {
+class PhotosItemsRepository {
     async findAll(itemId) {
-        return await ItemPhotos.findAll({where: { itemId }})
+        return await ItemPhotos.findAll({where: {itemId}})
     }
 
     async findOne(itemId, photoId) {
@@ -42,4 +42,4 @@ class PhotosRepository {
     }
 }
 
-module.exports = new PhotosRepository()
+module.exports = new PhotosItemsRepository()

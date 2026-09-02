@@ -1,7 +1,7 @@
 const FeedbackRepository = require('../repository/feedbackRepository')
 const ProfileRepository = require('../repository/profileRepository')
-const ApiError = require('../exceptions/appError')
-const { ExtendedFeedbackDto } = require('../dtos/feedbackDto')
+const ApiError = require('../exceptions/apiError')
+const {ExtendedFeedbackDto} = require('../dtos/feedbackDto')
 
 class FeedbackService {
     async create(data) {
@@ -13,7 +13,7 @@ class FeedbackService {
 
         const targetUser = await ProfileRepository.findByUserId(targetUserId)
         if (!targetUser) {
-            return ApiError.NotFound('Пользователь не найден')
+            throw ApiError.NotFound('Пользователь не найден')
         }
 
         const existing = await FeedbackRepository.findByPair(fromUserId, targetUserId)

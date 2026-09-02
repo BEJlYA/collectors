@@ -1,10 +1,10 @@
 const models = require('../config/associations')
-const {Users, Profiles} = models.Users
+const {Users, Profiles} = models
 const {Op} = require('sequelize')
 
 class AuthRepository {
     async findByEmail(email) {
-        return await Users.findOne({ where: { email }})
+        return await Users.findOne({where: {email}})
     }
 
     async findByOAuth(provider, oauthId) {
@@ -35,7 +35,7 @@ class AuthRepository {
                 oauthId: data.oauthId,
                 isActivated: data.isActivated ?? true,
                 role: data.role ?? 'USER'
-            }, { transaction: t })
+            }, {transaction: t})
 
             if (data.firstName || data.lastName || data.avatarUrl) {
                 await Profiles.create({
@@ -43,7 +43,7 @@ class AuthRepository {
                     firstName: data.firstName,
                     lastName: data.lastName,
                     avatarUrl: data.avatarUrl
-                }, { transaction: t })
+                }, {transaction: t})
             }
 
             return userData
@@ -69,11 +69,11 @@ class AuthRepository {
                 passwordHash: hashPassword,
                 activationLink: activationLink,
                 role: 'USER'
-            }, { transaction: t })
+            }, {transaction: t})
 
             await Profiles.create({
                 userId: userData.id,
-            }, { transaction: t })
+            }, {transaction: t})
 
             return userData
         })

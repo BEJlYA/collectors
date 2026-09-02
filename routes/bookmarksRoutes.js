@@ -5,18 +5,21 @@ const BookmarksValidator = require('../validators/bookmarksValidator')
 const ValidateMiddleware = require('../middleware/validateMiddleware')
 const BookmarksController = require('../controllers/bookmarksController')
 
+
 router.use(AuthMiddleware)
-router.use(BookmarksValidator.id())
-router.use(BookmarksValidator.data())
-router.use(ValidateMiddleware)
+
 
 router.get('/',
     BookmarksController.getAll)
 
 router.post('/',
+    BookmarksValidator.data(),
+    ValidateMiddleware,
     BookmarksController.create)
 
 router.delete('/:bookmarkId',
+    BookmarksValidator.id(),
+    ValidateMiddleware,
     BookmarksController.delete)
 
 module.exports = router

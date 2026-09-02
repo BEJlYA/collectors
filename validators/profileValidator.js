@@ -25,16 +25,16 @@ class ProfileValidator {
                 .trim()
                 .escape(),
             body('country')
-                .optional({ nullable: true })
-                .isLength({ min: 2, max: 100 })
+                .optional({nullable: true})
+                .isLength({min: 2, max: 100})
                 .withMessage('Название страны должно быть от 2 до 100 символов')
                 .matches(/^[a-zA-Zа-яА-Я\s\-]+$/)
                 .withMessage('Название страны может содержать только буквы, пробелы и дефисы')
                 .trim()
                 .escape(),
             body('city')
-                .optional({ nullable: true })
-                .isLength({ min: 2, max: 100 })
+                .optional({nullable: true})
+                .isLength({min: 2, max: 100})
                 .withMessage('Название города должно быть от 2 до 100 символов')
                 .matches(/^[a-zA-Zа-яА-Я\s\-]+$/)
                 .withMessage('Название города может содержать только буквы, пробелы и дефисы')
@@ -48,7 +48,7 @@ class ProfileValidator {
 
     avatar() {
         return [
-            body().custom((value, { req }) => {
+            body().custom((value, {req}) => {
                 if (!req.file) {
                     throw new Error('Файл не загружен')
                 }

@@ -1,5 +1,5 @@
 const models = require('../config/associations')
-const {Op} = require('sequelize');
+const {Op} = require('sequelize')
 const Category = models.Category
 
 class CategoryRepository {

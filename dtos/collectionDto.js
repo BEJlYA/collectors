@@ -1,10 +1,10 @@
-const { ListItemDto } = require('./itemDto')
+const {ListItemDto} = require('./itemDto')
 
 class CollectionDto {
     constructor(model) {
         this.id = model.id
         this.name = model.name
-        this.category = model.categoryTypeId?.displayName || null
+        this.categoryId = model.categoryId?.id || null
         this.isPublic = model.isPublic
         this.createdAt = model.createdAt
 

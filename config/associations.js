@@ -11,50 +11,57 @@ const ItemPhotos = require('../models/ItemPhotos')
 const Messages = require('../models/Messages')
 const Deals = require('../models/Deals')
 const Listings = require('../models/Listings')
+const ListingPhotos = require('../models/ListingPhotos')
 
 // ====================================================
 // ПОЛЬЗОВАТЕЛЬ (Users) — всё, что связано с пользователем
 // ====================================================
 
 // Токены
-Users.hasMany(Tokens, { foreignKey: 'userId', as: 'tokens' })
-Tokens.belongsTo(Users, { foreignKey: 'userId', as: 'user' })
+Users.hasMany(Tokens, {
+    foreignKey: 'userId',
+    as: 'tokens'
+})
+Tokens.belongsTo(Users, {
+    foreignKey: 'userId',
+    as: 'user'
+})
 
 // Профиль
 Users.hasOne(Profiles, {
-    foreignKey: { name: 'userId', onDelete: 'CASCADE' },
+    foreignKey: {name: 'userId', onDelete: 'CASCADE'},
     as: 'profile'
 })
 
 // Отзывы (которые оставил)
 Users.hasMany(Feedbacks, {
-    foreignKey: { name: 'fromUser' },
+    foreignKey: {name: 'fromUser'},
     as: 'givenReviews',
-    inverse: { as: 'reviewer' }
+    inverse: {as: 'reviewer'}
 })
 
 // Отзывы (которые получил)
 Users.hasMany(Feedbacks, {
-    foreignKey: { name: 'targetUser', onDelete: 'CASCADE' },
+    foreignKey: {name: 'targetUser', onDelete: 'CASCADE'},
     as: 'receivedReviews',
-    inverse: { as: 'reviewedUser' }
+    inverse: {as: 'reviewedUser'}
 })
 
 // Закладки
 Users.hasMany(Bookmarks, {
-    foreignKey: { name: 'userId', onDelete: 'CASCADE' },
+    foreignKey: {name: 'userId', onDelete: 'CASCADE'},
     as: 'bookmarks'
 })
 
 // Коллекции
 Users.hasMany(Collections, {
-    foreignKey: { name: 'userId', onDelete: 'CASCADE' },
+    foreignKey: {name: 'userId', onDelete: 'CASCADE'},
     as: 'collections'
 })
 
 // Сообщения
 Users.hasMany(Messages, {
-    foreignKey: { name: 'userId', onDelete: 'CASCADE' },
+    foreignKey: {name: 'userId', onDelete: 'CASCADE'},
     as: 'messages'
 })
 
@@ -69,16 +76,16 @@ Users.hasMany(Listings, {
 // ====================================================
 
 Category.hasMany(Collections, {
-    foreignKey: { name: 'categoryTypeId', onDelete: 'CASCADE' },
+    foreignKey: {name: 'categoryId', onDelete: 'CASCADE'},
     as: 'collections'
 })
 Collections.belongsTo(Category, {
-    foreignKey: 'categoryTypeId',
+    foreignKey: 'categoryId',
     as: 'categoryType'
 })
 
 Collections.hasMany(Items, {
-    foreignKey: { name: 'collectionId', onDelete: 'CASCADE' },
+    foreignKey: {name: 'collectionId', onDelete: 'CASCADE'},
     as: 'items'
 })
 Items.belongsTo(Collections, {
@@ -91,7 +98,7 @@ Items.belongsTo(Collections, {
 // ====================================================
 
 Items.hasMany(ItemPhotos, {
-    foreignKey: { name: 'itemId', onDelete: 'CASCADE' },
+    foreignKey: {name: 'itemId', onDelete: 'CASCADE'},
     as: 'photos'
 })
 ItemPhotos.belongsTo(Items, {
@@ -99,21 +106,48 @@ ItemPhotos.belongsTo(Items, {
     as: 'item'
 })
 
-Items.hasMany(Bookmarks, {
-    foreignKey: { name: 'itemId', onDelete: 'CASCADE' },
-    as: 'bookmarks'
+// ====================================================
+// ЧАТЫ (Deals) и ОБЪЯВЛЕНИЯ (Listings)
+// ====================================================
+
+Deals.belongsTo(Items, {
+    foreignKey: 'itemId',
+    as: 'item'
+})
+Deals.belongsTo(Users, {
+    foreignKey: 'sellerId',
+    as: 'seller'
+})
+Deals.belongsTo(Users, {
+    foreignKey: 'buyerId',
+    as: 'buyer'
+})
+
+Listings.belongsTo(Users, {
+    foreignKey: 'sellerId',
+    as: 'seller'
+})
+Listings.belongsTo(Items, {
+    foreignKey: 'itemId',
+    as: 'item'
 })
 
 // ====================================================
-// СДЕЛКИ (Deals) и ОБЪЯВЛЕНИЯ (Listings)
+// ОБЪЯВЛЕНИЯ (Listings) и ФОТО (ListingPhotos)
 // ====================================================
 
-Deals.belongsTo(Items, { foreignKey: 'itemId', as: 'item' })
-Deals.belongsTo(Users, { foreignKey: 'sellerId', as: 'seller' })
-Deals.belongsTo(Users, { foreignKey: 'buyerId', as: 'buyer' })
-
-Listings.belongsTo(Users, { foreignKey: 'sellerId', as: 'seller' })
-Listings.belongsTo(Items, { foreignKey: 'itemId', as: 'item' })
+Listings.hasMany(ListingPhotos, {
+    foreignKey: {name: 'listingId', onDelete: 'CASCADE'},
+    as: 'photos'
+})
+ListingPhotos.belongsTo(Listings, {
+    foreignKey: 'listingId',
+    as: 'listing'
+})
+Listings.hasMany(Bookmarks, {
+    foreignKey: {name: 'listingId'},
+    as: 'bookmarks'
+})
 
 
 module.exports = {
@@ -129,5 +163,6 @@ module.exports = {
     ItemPhotos,
     Messages,
     Deals,
-    Listings
+    Listings,
+    ListingPhotos
 }

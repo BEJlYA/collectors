@@ -1,5 +1,6 @@
 const {Sequelize} = require('@sequelize/core')
 const {PostgresDialect} = require('@sequelize/postgres')
+require('dotenv').config()
 
 const sequelize = new Sequelize({
     dialect: PostgresDialect,
@@ -10,10 +11,9 @@ const sequelize = new Sequelize({
     port: process.env.DB_PORT,
     ssl: false
     // logging: console.log
-});
+})
 
 sequelize.authenticate()
-    .then(() => console.log('Database connected...'))
-    .catch(err => console.error('Database connection error:', err))
+    .catch(err => console.error(err))
 
 module.exports = sequelize

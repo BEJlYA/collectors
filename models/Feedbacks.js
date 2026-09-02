@@ -1,5 +1,5 @@
 const {DataTypes, Model} = require('@sequelize/core')
-const sequelize = require('../config/database');
+const sequelize = require('../config/database')
 
 class Feedbacks extends Model {
 }
@@ -20,7 +20,7 @@ Feedbacks.init({
         allowNull: false,
         columnName: 'target_user_id'
     },
-    initiatorType:{
+    initiatorType: {
         type: DataTypes.ENUM('SELLER', 'BUYER'),
         allowNull: false,
         columName: 'initiator_type'
@@ -38,7 +38,7 @@ Feedbacks.init({
         allowNull: false
     },
     createdAt: {
-    type: DataTypes.DATE,
+        type: DataTypes.DATE,
         defaultValue: DataTypes.NOW,
         columnName: 'created_at'
     }

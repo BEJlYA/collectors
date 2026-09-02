@@ -1,5 +1,5 @@
 const ProfileRepository = require('../repository/profileRepository')
-const ApiError = require("../exceptions/appError")
+const ApiError = require("../exceptions/apiError")
 const {ProfileDto, ProfileFeedbacksDto, ProfileSettingsDto, ProfileCollectionsDto} = require('../dtos/profileDto')
 const queue = require("../workers/imageQueue")
 
@@ -89,7 +89,7 @@ class ProfileService {
             throw ApiError.BadRequest('Не существующий профиль')
         }
 
-        return new ProfileCollectionsDto(profileData)
+        return new ProfileFeedbacksDto(profileData)
     }
 
     async getSettings(userId) {

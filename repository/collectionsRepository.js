@@ -1,8 +1,8 @@
 const models = require('../config/associations')
-const {Collections, Profiles, Category, Items, ItemPhotos} = models.Collections
+const {Collections, Category, Items, ItemPhotos} = models.Collections
 
 class CollectionsRepository {
-    async findAll(userId){
+    async findAll(userId) {
         return await Collections.findAll(
             {
                 where: {
@@ -67,7 +67,7 @@ class CollectionsRepository {
         return await Collections.create({
             userId,
             name: data.name,
-            categoryTypeId: data.categoryTypeId,
+            categoryId: data.categoryId,
             isPublic: data.isPublic ?? true
         })
     }
@@ -79,7 +79,7 @@ class CollectionsRepository {
     async updateCollection(collectionData, data) {
         return await collectionData.update({
             name: data.name,
-            categoryTypeId: data.categoryTypeId,
+            categoryId: data.categoryId,
             isPublic: data.isPublic
         })
     }

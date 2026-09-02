@@ -1,6 +1,6 @@
 const ItemsRepository = require('../repository/itemsRepository')
-const ApiError = require("../exceptions/appError")
-const { ItemDto, ListItemDto } = require('../dtos/itemDto')
+const ApiError = require("../exceptions/apiError")
+const {ItemDto, ListItemDto} = require('../dtos/itemDto')
 
 class ItemsService {
     async getAll(collectionId) {
@@ -48,7 +48,7 @@ class ItemsService {
             itemsData.description === data.description &&
             itemsData.isForTrade === data.isForTrade
         ) {
-                throw ApiError.Conflict('Нет изменений для обновления')
+            throw ApiError.Conflict('Нет изменений для обновления')
         }
 
         itemsData = await ItemsRepository.updateItem(itemsData, data)

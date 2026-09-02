@@ -1,25 +1,25 @@
 const models = require('../config/associations')
-const {Collections, Category} = require("../config/associations");
+const {Collections, Category} = require("../config/associations")
 const {Profile, Users, Feedbacks} = models
 
 class ProfileRepository {
     async findByUserId(userId) {
         return await Profile.findOne({
-                where: {
-                    userId
-                },
-                include: [
-                    {
-                        model: Users,
-                        as: 'user',
-                        attributes: ['phoneNumber', 'email', 'role', 'publicId']
-                    }
-                ]
-            })
+            where: {
+                userId
+            },
+            include: [
+                {
+                    model: Users,
+                    as: 'user',
+                    attributes: ['phoneNumber', 'email', 'role', 'publicId']
+                }
+            ]
+        })
     }
 
-    async update(profile, data) {
-        return await profile.update(data)
+    async update(profileData, data) {
+        return await profileData.update(data)
     }
 
     async findByPublicId(publicId) {
@@ -72,6 +72,52 @@ class ProfileRepository {
                 }
             ]
         })
+    }
+
+    async getAllProfiles () {
+        return await Profile.findAll({
+            include: [
+                {
+                    model: Users,
+                    as: 'users'
+                }
+            ]
+        })
+    }
+
+    async findByUserIdExtended (userId) {
+        return await Profile.findOne({
+            where: {
+                userId
+            },
+            include: [
+                {
+                  model: Users,
+                  as: 'users'
+                },
+                {
+                    model: Collections,
+                    as: 'collections',
+                    attributes: ['id', 'name', 'category_type_id', 'is_public', 'createdAt'],
+                    include: [
+                        {
+                            model: Category,
+                            as: 'category',
+                            attributes: ['id', 'name', 'displayName', 'isActive']
+                        }
+                    ]
+                },
+                {
+                    model: Feedbacks,
+                    as: 'feedbacks',
+                    attributes: ['id', 'comment', 'rating', 'createdAt']
+                }
+            ]
+        })
+    }
+
+    async delete(profileData) {
+        return await profileData.destroy()
     }
 }
 

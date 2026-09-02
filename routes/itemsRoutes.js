@@ -1,40 +1,43 @@
 const {Router} = require('express')
-const router = Router({ mergeParams: true })
-const photosRouter = require('./photosRoutes')
+const router = Router({mergeParams: true})
+const photosItemsRouter = require('./photosItemsRoutes')
 const AuthMiddleware = require('../middleware/authMiddleware')
-const itemsValidator = require('../validators/itemsValidator')
+const ItemsValidator = require('../validators/itemsValidator')
 const ResourcesMiddleware = require('../middleware/resourcesMiddleware')
 const OwnerMiddleware = require('../middleware/ownerMiddleware')
 const ValidateMiddleware = require("../middleware/validateMiddleware")
-const itemsController = require('../controllers/itemsController')
+const ItemsController = require('../controllers/itemsController')
 
-router.use('/:itemId/photos', photosRouter)
+
+router.use('/:itemId/photos', photosItemsRouter)
+
 
 router.use(AuthMiddleware)
-router.use(itemsValidator.ids())
+router.use(ItemsValidator.ids())
 router.use(ResourcesMiddleware.collection)
 router.use(OwnerMiddleware('collection'))
 
+
 router.get('/',
     ValidateMiddleware,
-    itemsController.getAll)
+    ItemsController.getAll)
 
 router.get('/:itemId',
     ValidateMiddleware,
-    itemsController.getOne)
+    ItemsController.getOne)
 
 router.post('/',
-    itemsValidator.data(),
+    ItemsValidator.data(),
     ValidateMiddleware,
-    itemsController.create)
+    ItemsController.create)
 
 router.put('/:itemId',
-    itemsValidator.data(),
+    ItemsValidator.data(),
     ValidateMiddleware,
-    itemsController.update)
+    ItemsController.update)
 
 router.delete('/:itemId',
     ValidateMiddleware,
-    itemsController.delete)
+    ItemsController.delete)
 
 module.exports = router

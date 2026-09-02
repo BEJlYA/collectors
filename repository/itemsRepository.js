@@ -8,12 +8,12 @@ class ItemsRepository {
 
     async findAllItems(collectionId) {
         return await Items.findAll({
-            where: { collectionId },
+            where: {collectionId},
             order: [['createdAt', 'DESC']],
             include: [{
                 model: ItemPhotos,
                 as: 'photos',
-                attributes: ['id', 'photoUrl', 'isPrimary'],
+                attributes: ['id', 'photoUrl', 'isPrimary', 'sortOrder'],
                 limit: 1
             }]
         })
@@ -26,10 +26,10 @@ class ItemsRepository {
                 collectionId
             },
             include: [{
-                    model: ItemPhotos,
-                    as: 'photos',
-                    attributes: ['id', 'photoUrl', 'isPrimary']
-                }]
+                model: ItemPhotos,
+                as: 'photos',
+                attributes: ['id', 'photoUrl', 'isPrimary']
+            }]
         })
     }
 

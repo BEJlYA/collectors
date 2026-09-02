@@ -1,15 +1,16 @@
 const bcrypt = require('bcrypt')
-const {v4: uuid} = require('uuid')
-const TokenService = require('../services/TokenService')
+const crypto = require('crypto')
+const TokenService = require('../services/tokenService')
 const AuthRepository = require('../repository/authRepository')
 const mailQueue = require('../workers/mailQueue')
 const TokenRepository = require('../repository/tokenRepository')
 const AuthDto = require('../dtos/authDto')
-const ApiError = require('../exceptions/appError')
+const ApiError = require('../exceptions/apiError')
+const SearchService = require('../services/searchService')
 
 class AuthService {
     async registration(data) {
-        const { email, phoneNumber, password } = data
+        const {email, phoneNumber, password} = data
 
         if (!email && !phoneNumber) {
             throw ApiError.BadRequest('Укажите email или номер телефона')
@@ -22,15 +23,15 @@ class AuthService {
 
         if (existingUser) {
             if (existingUser.email === email) {
-                throw ApiError.Conflict('Email уже зарегистрирован')
+                throw ApiError.Conflict('Данный email уже зарегистрирован')
             }
             if (existingUser.phoneNumber === phoneNumber) {
-                throw ApiError.Conflict('Телефон уже используется')
+                throw ApiError.Conflict('Данный телефон уже зарегистрирован')
             }
         }
 
         const hashPassword = bcrypt.hashSync(password, 7)
-        const activationLink = uuid()
+        const activationLink = crypto.randomUUID()
 
         const userData = await AuthRepository.createUser(
             email || null,
@@ -52,6 +53,7 @@ class AuthService {
             role: userData.role
         })
 
+        await SearchService.indexUser(userData)
         return {
             accessToken,
             refreshToken,
@@ -121,13 +123,14 @@ class AuthService {
             role: userData.role
         })
 
+        await SearchService.indexUser(userData)
         return {
             accessToken,
             refreshToken,
             userDto
         }
     }
-    
+
     async activate(activationLink) {
         const userData = await AuthRepository.activateUser(activationLink)
 
@@ -157,7 +160,7 @@ class AuthService {
     }
 
     async logout(userId) {
-        return await TokenService.deleteToken(userId)
+        await TokenService.deleteToken(userId)
     }
 }
 

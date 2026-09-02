@@ -1,12 +1,14 @@
 const {Router} = require('express')
-const router = Router({ mergeParams: true })
+const router = Router({mergeParams: true})
 const itemsRoutes = require("./itemsRoutes")
 const AuthMiddleware = require('../middleware/authMiddleware')
 const CollectionValidator = require('../validators/collectionValidator')
 const ValidateMiddleware = require("../middleware/validateMiddleware")
 const CollectionsController = require('../controllers/collectionsController')
 
+
 router.use(AuthMiddleware)
+
 
 router.use('/:collectionId/items', itemsRoutes)
 

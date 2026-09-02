@@ -1,38 +1,40 @@
 const {Router} = require('express')
 const router = Router()
 const AuthMiddleware = require('../middleware/authMiddleware')
-const profileValidator = require('../validators/profileValidator')
+const ProfileValidator = require('../validators/profileValidator')
 const ValidateMiddleware = require('../middleware/validateMiddleware')
 const ProfileController = require('../controllers/profileController')
 
+
 router.use(AuthMiddleware)
+
 
 router.get('/me',
     ValidateMiddleware,
     ProfileController.getMyProfile)
 
 router.put('/me',
-    profileValidator.update(),
+    ProfileValidator.update(),
     ValidateMiddleware,
     ProfileController.updateMyProfile)
 
 router.put('/me/avatar',
-    profileValidator.avatar(),
+    ProfileValidator.avatar(),
     ValidateMiddleware,
     ProfileController.updateAvatar)
 
 router.get('/:publicId',
-    profileValidator.id(),
+    ProfileValidator.id(),
     ValidateMiddleware,
     ProfileController.getPublicProfile)
 
 router.get('/:publicId/collections',
-    profileValidator.id(),
+    ProfileValidator.id(),
     ValidateMiddleware,
     ProfileController.getUserCollections)
 
 router.get('/:publicId/feedbacks',
-    profileValidator.id(),
+    ProfileValidator.id(),
     ValidateMiddleware,
     ProfileController.getUserFeedbacks)
 
@@ -41,7 +43,7 @@ router.get('/settings',
     ProfileController.getSettings)
 
 router.put('/settings',
-    profileValidator.settings(),
+    ProfileValidator.settings(),
     ValidateMiddleware,
     ProfileController.updateSettings)
 

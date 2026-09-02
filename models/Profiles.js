@@ -1,5 +1,5 @@
 const {DataTypes, Model} = require('@sequelize/core')
-const sequelize = require('../config/database');
+const sequelize = require('../config/database')
 
 class Profiles extends Model {
 }
@@ -50,9 +50,9 @@ Profiles.init({
     }
 }, {
     sequelize,
-        modelName: 'Profiles',
-        tableName: 'profiles',
-        timestamps: true
+    modelName: 'Profiles',
+    tableName: 'profiles',
+    timestamps: true
 })
 
 module.exports = Profiles

@@ -1,5 +1,5 @@
 const {DataTypes, Model} = require('@sequelize/core')
-const sequelize = require('../config/database');
+const sequelize = require('../config/database')
 
 class Collections extends Model {
 }
@@ -20,10 +20,10 @@ Collections.init({
         columnName: 'name',
         defaultValue: 'New collection'
     },
-    categoryTypeId: {
+    categoryId: {
         type: DataTypes.INTEGER,
         defaultValue: 0,
-        columnName: 'category_type_id'
+        columnName: 'category_id'
     },
     isPublic: {
         type: DataTypes.BOOLEAN,

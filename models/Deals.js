@@ -1,7 +1,8 @@
-const { DataTypes, Model } = require('@sequelize/core')
-const sequelize = require('../config/database');
+const {DataTypes, Model} = require('@sequelize/core')
+const sequelize = require('../config/database')
 
-class Deals extends Model {}
+class Deals extends Model {
+}
 
 Deals.init({
     id: {
@@ -19,14 +20,10 @@ Deals.init({
         allowNull: false,
         columnName: 'buyer_id'
     },
-    status: {
-        type: DataTypes.ENUM('ACTIVE', 'COMPLETED', 'CANCELLED'),
-        defaultValue: 'ACTIVE'
-    },
-    completedAt: {
-        type: DataTypes.DATE,
-        columnName: 'completed_at',
-        allowNull: true
+    sellerId: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        columnName: 'seller_id'
     }
 }, {
     sequelize,

@@ -26,10 +26,11 @@ class TokenService {
 
     async deleteToken(userId) {
         const tokenData = await TokenRepository.findByUserId(userId)
-        return await TokenRepository.delete(tokenData)
+
+        await TokenRepository.delete(tokenData)
     }
 
-    _validateAccessToken (token) {
+    _validateAccessToken(token) {
         try {
             return jwt.verify(token, process.env.JWT_ACCESS_SECRET)
         } catch (e) {
@@ -37,7 +38,7 @@ class TokenService {
         }
     }
 
-    _validateRefreshToken (token) {
+    _validateRefreshToken(token) {
         try {
             return jwt.verify(token, process.env.JWT_REFRESH_SECRET)
         } catch (e) {

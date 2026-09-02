@@ -1,5 +1,5 @@
 const {DataTypes, Model} = require('@sequelize/core')
-const sequelize = require('../config/database');
+const sequelize = require('../config/database')
 
 class Bookmarks extends Model {
 }

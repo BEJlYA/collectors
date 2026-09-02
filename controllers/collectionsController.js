@@ -1,5 +1,5 @@
 const CollectionsService = require('../services/collectionsService')
-const ResponseFormatter = require("../utils/responseFormatter");
+const ResponseFormatter = require("../utils/responseFormatter")
 
 class CollectionsController {
     async getAll(req, res, next) {
@@ -32,13 +32,13 @@ class CollectionsController {
     async create(req, res, next) {
         try {
             const userId = req.user.id
-            const {name, categoryTypeId, isPublic} = req.body
+            const {name, categoryId, isPublic} = req.body
 
             const collectionsData = await CollectionsService.create(
                 userId,
                 {
                     name,
-                    categoryTypeId,
+                    categoryId,
                     isPublic
                 }
             )
@@ -52,39 +52,39 @@ class CollectionsController {
 
     }
 
-        async update(req, res, next) {
-            try {
-                const collectionId = req.params.collectionId
-                const {name, categoryTypeId, isPublic} = req.body
+    async update(req, res, next) {
+        try {
+            const collectionId = req.params.collectionId
+            const {name, categoryId, isPublic} = req.body
 
-                const collectionsData = await CollectionsService.update(
-                    collectionId,
-                    {
-                        name,
-                        categoryTypeId,
-                        isPublic
-                    }
-                )
+            const collectionsData = await CollectionsService.update(
+                collectionId,
+                {
+                    name,
+                    categoryId,
+                    isPublic
+                }
+            )
 
-                ResponseFormatter.success(res, {
-                    collections: collectionsData
-                }, 202)
-            } catch (e) {
-                next(e)
-            }
+            ResponseFormatter.success(res, {
+                collections: collectionsData
+            }, 202)
+        } catch (e) {
+            next(e)
         }
+    }
 
-        async delete(req, res, next) {
-            try {
-                const collectionId = req.params.collectionId
+    async delete(req, res, next) {
+        try {
+            const collectionId = req.params.collectionId
 
-                await CollectionsService.delete(collectionId)
+            await CollectionsService.delete(collectionId)
 
-                ResponseFormatter.success(res)
-            } catch (e) {
-                return next(e)
-            }
+            ResponseFormatter.success(res)
+        } catch (e) {
+            return next(e)
         }
+    }
 }
 
 module.exports = new CollectionsController()

@@ -13,4 +13,5 @@ class ExtendedPhotoDto extends PhotoDto {
         this.sortOrder = model.sortOrder
     }
 }
+
 module.exports = {PhotoDto, ExtendedPhotoDto}

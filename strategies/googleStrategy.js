@@ -14,4 +14,4 @@ module.exports = new GoogleStrategy({
         } catch (err) {
             return done(err, null)
         }
-})
+    })

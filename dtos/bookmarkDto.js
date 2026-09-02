@@ -1,4 +1,4 @@
-const { ItemDto } = require('./itemDto')
+const {ItemDto} = require('./itemDto')
 
 class BookmarkDto {
     constructor(model) {

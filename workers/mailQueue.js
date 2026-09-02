@@ -9,7 +9,7 @@ const mailQueue = new Queue('email', {
 })
 
 mailQueue.process('sendActivation', async (job) => {
-    const { to, link } = job.data
+    const {to, link} = job.data
 
     const transporter = nodemailer.createTransport({
         host: process.env.SMTP_HOST,

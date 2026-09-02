@@ -1,5 +1,6 @@
-const ApiError = require('../exceptions/appError')
+const ApiError = require('../exceptions/apiError')
 const CollectionsRepository = require('../repository/collectionsRepository')
+const ListingsRepository = require('../repository/listingsRepository')
 const ItemsRepository = require('../repository/itemsRepository')
 
 module.exports = {
@@ -30,6 +31,21 @@ module.exports = {
             }
 
             req.item = itemData
+            next()
+        } catch (e) {
+            next(e)
+        }
+    },
+
+    listing: async (req, res, next) => {
+        try {
+            const listingData = await ListingsRepository.findById(req.params.listingId)
+
+            if (!listingData) {
+                next(ApiError.NotFound('Коллекция не найдена'))
+            }
+
+            req.collection = listingData
             next()
         } catch (e) {
             next(e)

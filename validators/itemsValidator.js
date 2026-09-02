@@ -4,10 +4,10 @@ class ItemsValidator {
     ids() {
         return [
             param('collectionId')
-                .isInt({min:1}).withMessage('ID коллекции некорректный'),
+                .isInt({min: 1}).withMessage('ID коллекции некорректный'),
             param('itemId')
                 .optional()
-                .isInt({min:1}).withMessage('ID предмета некорректный')
+                .isInt({min: 1}).withMessage('ID предмета некорректный')
         ]
     }
 
@@ -20,7 +20,7 @@ class ItemsValidator {
                 .trim()
                 .escape(),
             body('description')
-                .isLength({min: 0,max: 250}).withMessage('Описание предмета не может быть больше 250 символов')
+                .isLength({min: 0, max: 250}).withMessage('Описание предмета не может быть больше 250 символов')
                 .trim()
                 .escape(),
             body('isForTrade')
@@ -28,7 +28,7 @@ class ItemsValidator {
                 .isBoolean().withMessage('Укажите принадлежность обмена предмета в булевом значении'),
             body('newCollectionId')
                 .optional()
-                .isInt({min:1}).withMessage('ID новой коллекции некорректный')
+                .isInt({min: 1}).withMessage('ID новой коллекции некорректный')
 
         ]
     }

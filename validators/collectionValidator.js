@@ -4,7 +4,7 @@ class CollectionValidator {
     id() {
         return [
             param('id')
-                .isInt({min:1}).withMessage('ID некорректный'),
+                .isInt({min: 1}).withMessage('ID некорректный'),
         ]
     }
 
@@ -16,9 +16,9 @@ class CollectionValidator {
                 .matches(/^[a-zA-Zа-яА-Я0-9\s\-_]+$/).withMessage('Имя может содержать буквы, цифры, пробелы, дефисы и подчеркивания')
                 .trim()
                 .escape(),
-            body('categoryTypeId')
+            body('categoryId')
                 .notEmpty().withMessage('ID Категории коллекции не может быть пустым')
-                .isInt({min:1}).withMessage('Укажите ID категории коллекции в числовом формате'),
+                .isInt({min: 1}).withMessage('Укажите ID категории коллекции в числовом формате'),
             body('isPublic')
                 .optional()
                 .isBoolean().withMessage('Укажите видимость коллекции в булевом значении')

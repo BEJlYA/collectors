@@ -1,7 +1,8 @@
-const { DataTypes, Model } = require('@sequelize/core')
-const sequelize = require('../config/database');
+const {DataTypes, Model} = require('@sequelize/core')
+const sequelize = require('../config/database')
 
-class Listings extends Model {}
+class Listings extends Model {
+}
 
 Listings.init({
     id: {
@@ -9,9 +10,13 @@ Listings.init({
         primaryKey: true,
         autoIncrement: true
     },
+    name: {
+      type: DataTypes.TEXT,
+        allowNull: true
+    },
     itemId: {
         type: DataTypes.INTEGER,
-        allowNull: false,
+        allowNull: true,
         columnName: 'item_id',
         defaultValue: null
     },
@@ -21,11 +26,12 @@ Listings.init({
         columnName: 'seller_id'
     },
     type: {
-        type: DataTypes.ENUM('SALE', 'TRADE', 'INSEARCH'),
+        type: DataTypes.ENUM('SALE', 'EXCHANGE'), //, 'INSEARCH'
         allowNull: false
     },
-    category: {
+    categoryId: {
         type: DataTypes.STRING,
+        columnName: 'category_id',
         allowNull: false
     },
     price: {
@@ -36,12 +42,13 @@ Listings.init({
         type: DataTypes.TEXT,
         allowNull: true
     },
-    delivery: {
-        type: DataTypes.ARRAY(DataTypes.ENUM('PICKUP', 'COURIER', 'PICK-UP POINT'))
-    },
     status: {
-        type: DataTypes.ENUM('ACTIVE', 'SOLD', 'INACTIVE'),
-        defaultValue: 'ACTIVE'
+        type: DataTypes.ENUM('DRAFT', 'PENDING', 'ACTIVE', 'SOLD', 'HIDDEN', 'REJECTED'),
+        defaultValue: 'DRAFT'
+    },
+    reason: {
+      type: DataTypes.STRING,
+      allowNull: true
     },
     views: {
         type: DataTypes.INTEGER,
@@ -49,8 +56,7 @@ Listings.init({
     },
     expiresAt: {
         type: DataTypes.DATE,
-        columnName: 'expires_at',
-        allowNull: true
+        columnName: 'expires_at'
     }
 }, {
     sequelize,

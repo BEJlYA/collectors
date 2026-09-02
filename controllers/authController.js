@@ -38,9 +38,9 @@ class AuthController {
             })
 
             ResponseFormatter.success(res, {
-                    accessToken: userData.accessToken,
-                    user: userData.userDto
-                })
+                accessToken: userData.accessToken,
+                user: userData.userDto
+            }, 201)
         } catch (e) {
             next(e)
         }
@@ -48,7 +48,7 @@ class AuthController {
 
     async oauthCallback(req, res, next) {
         try {
-            const { tokens } = req.user
+            const {tokens} = req.user
 
             res.cookie('refreshToken', tokens.refreshToken, {
                 maxAge: 30 * 24 * 60 * 60 * 1000,
@@ -56,7 +56,7 @@ class AuthController {
                 sameSite: 'strict'
             })
 
-            res.redirect(`${process.env.CLIENT_URL}?accessToken=${tokens.accessToken}`)
+            res.redirect(`${process.env.CLIENT_URL || 'https://localhost:3000'}?accessToken=${tokens.accessToken}`)
         } catch (err) {
             next(err)
         }
@@ -66,7 +66,7 @@ class AuthController {
         try {
             await AuthService.activate(req.params.link)
 
-            return res.redirect(process.env.CLIENT_URL)
+            return res.redirect(process.env.CLIENT_URL || 'http://localhost:3000')
         } catch (e) {
             next(e)
         }
@@ -86,9 +86,9 @@ class AuthController {
             })
 
             ResponseFormatter.success(res, {
-                    accessToken: userData.accessToken,
-                    user: userData.userDto
-                })
+                accessToken: userData.accessToken,
+                user: userData.userDto
+            })
         } catch (e) {
             return next(e)
         }
@@ -97,16 +97,14 @@ class AuthController {
     async logout(req, res, next) {
         try {
             const userId = req.user.id
-            const tokenData = await AuthService.logout(userId)
+            await AuthService.logout(userId)
 
             res.clearCookie('refreshToken')
 
-            ResponseFormatter.success(res, {
-                user: tokenData
-            })
+            ResponseFormatter.success(res)
         } catch (e) {
             next(e)
-    }
+        }
     }
 }
 

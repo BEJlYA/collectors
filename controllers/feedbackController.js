@@ -1,5 +1,5 @@
 const FeedbackService = require('../services/feedbackService')
-const ResponseFormatter = require("../utils/responseFormatter");
+const ResponseFormatter = require("../utils/responseFormatter")
 
 class FeedbackController {
     async create(req, res, next) {

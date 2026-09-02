@@ -1,5 +1,5 @@
 const AuthDto = require('./authDto')
-const { ExtendedFeedbackDto } = require('./feedbackDto')
+const {ExtendedFeedbackDto} = require('./feedbackDto')
 const CollectionDto = require('../dtos/collectionDto')
 
 class ProfileTemplate {
@@ -64,5 +64,15 @@ class ProfileSettingsDto {
     }
 }
 
+class AdminProfileDto {
+    constructor(model) {
+        Object.assign(this, new ProfileTemplate(model))
+        Object.assign(this, new ProfileCollectionsDto(model))
+        Object.assign(this, new ProfileFeedbacksDto(model))
+        this.isActivated = model.isActivated
+        this.isBlocked = model.isBlocked
+    }
+}
 
-module.exports = {ProfileDto, ProfileCollectionsDto, ProfileFeedbacksDto, ProfileSettingsDto}
+
+module.exports = {ProfileTemplate, ProfileDto, ProfileCollectionsDto, ProfileFeedbacksDto, ProfileSettingsDto, AdminProfileDto}

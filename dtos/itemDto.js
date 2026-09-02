@@ -1,4 +1,4 @@
-const { PhotoDto } = require("./photoDto")
+const {PhotoDto} = require("./photoDto")
 
 class ItemDto {
     constructor(model) {
@@ -13,7 +13,7 @@ class ItemDto {
 }
 
 class ListItemDto {
-    constructor(model) {
+        constructor(model) {
         this.id = model.id
         this.name = model.name
         this.createdAt = model.createdAt
@@ -23,4 +23,5 @@ class ListItemDto {
             || null
     }
 }
+
 module.exports = {ItemDto, ListItemDto}

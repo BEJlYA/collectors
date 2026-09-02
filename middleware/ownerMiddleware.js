@@ -1,4 +1,4 @@
-const ApiError = require('../exceptions/appError')
+const ApiError = require('../exceptions/apiError')
 
 module.exports = (resourceName, ownerField = 'userId') => {
     return (req, res, next) => {

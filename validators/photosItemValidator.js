@@ -1,15 +1,15 @@
 const {param, body} = require('express-validator')
 
-class PhotosValidator {
+class PhotosItemValidator {
     ids() {
         return [
             param('collectionId')
-                .isInt({min:1}).withMessage('ID коллекции некорректный'),
+                .isInt({min: 1}).withMessage('ID коллекции некорректный'),
             param('itemId')
-                .isInt({min:1}).withMessage('ID предмета некорректный'),
+                .isInt({min: 1}).withMessage('ID предмета некорректный'),
             param('photoId')
                 .optional()
-                .isInt({min:1}).withMessage('ID фото некорректный')
+                .isInt({min: 1}).withMessage('ID фото некорректный')
         ]
     }
 
@@ -19,9 +19,9 @@ class PhotosValidator {
                 .isBoolean().withMessage('isPrimary должно быть true или false')
                 .toBoolean(),
             body('sortOrder')
-                .isInt({ min: 0 }).withMessage('sortOrder должен быть ≥ 0')
+                .isInt({min: 0}).withMessage('sortOrder должен быть ≥ 0')
                 .toInt(),
-            body().custom((value, { req }) => {
+            body().custom((value, {req}) => {
                 if (!req.files || req.files.length === 0) {
                     throw new Error('Не выбраны файлы для загрузки')
                 }
@@ -43,10 +43,10 @@ class PhotosValidator {
                 .toBoolean(),
             body('sortOrder')
                 .optional()
-                .isInt({ min: 0 }).withMessage('sortOrder должен быть ≥ 0')
+                .isInt({min: 0}).withMessage('sortOrder должен быть ≥ 0')
                 .toInt()
         ]
     }
 }
 
-module.exports = new PhotosValidator()
+module.exports = new PhotosItemValidator()

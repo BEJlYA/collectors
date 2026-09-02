@@ -1,12 +1,12 @@
 const CollectionsRepository = require('../repository/collectionsRepository')
-const ApiError = require("../exceptions/appError")
+const ApiError = require("../exceptions/apiError")
 const CollectionDto = require('../dtos/collectionDto')
 
 class CollectionsService {
     async getAll(userId) {
         const collectionsData = await CollectionsRepository.findAll(userId)
 
-        if (!collectionsData|| collectionsData.length === 0) {
+        if (!collectionsData || collectionsData.length === 0) {
             return []
         }
 
@@ -42,7 +42,7 @@ class CollectionsService {
         }
         if (
             collectionsData.name === data.name &&
-            collectionsData.categoryTypeId === data.categoryTypeId &&
+            collectionsData.categoryId === data.categoryId &&
             collectionsData.isPublic === data.isPublic
         ) {
             throw ApiError.Conflict('Нет изменений для обновления')

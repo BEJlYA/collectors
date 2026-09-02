@@ -1,5 +1,5 @@
 const {DataTypes, Model} = require('@sequelize/core')
-const sequelize = require('../config/database');
+const sequelize = require('../config/database')
 
 class Messages extends Model {
 }
@@ -10,15 +10,20 @@ Messages.init({
         primaryKey: true,
         autoIncrement: true
     },
-    itemId: {
+    dealId: {
         type: DataTypes.INTEGER,
         allowNull: false,
-        columnName: 'item_id'
+        columnName: 'deal_id'
     },
     userId: {
         type: DataTypes.INTEGER,
         allowNull: false,
         columnName: 'user_id'
+    },
+    replyToId: {
+        type: DataTypes.INTEGER,
+        columnName: 'reply_to_id',
+        allowNull: true
     },
     message: {
         type: DataTypes.TEXT,
@@ -29,6 +34,11 @@ Messages.init({
         defaultValue: false,
         columnName: 'is_read'
     },
+    isEdited: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false,
+        columnName: 'is_edited'
+    },
     createdAt: {
         type: DataTypes.DATE,
         defaultValue: DataTypes.NOW,
@@ -38,7 +48,11 @@ Messages.init({
     sequelize,
     modelName: 'Messages',
     tableName: 'messages',
-    timestamps: false
+    timestamps: false,
+    indexes: [
+        { fields: ['deal_id'] },
+        { fields: ['deal_id', 'created_at'] }
+    ]
 })
 
 module.exports = Messages

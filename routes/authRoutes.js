@@ -8,6 +8,7 @@ const AuthValidator = require('../validators/authValidator')
 const ValidateMiddleware = require('../middleware/validateMiddleware')
 const AuthMiddleware = require('../middleware/authMiddleware')
 
+
 router.post('/register',
     RateLimitMiddleware.auth(),
     AuthValidator.registration(),
@@ -30,10 +31,11 @@ Object.entries(oauthConfig).forEach(([provider, config]) => {
     )
 
     router.get(`/${provider}/callback`,
-        passport.authenticate(provider, { session: false }),
+        passport.authenticate(provider, {session: false}),
         AuthController.oauthCallback
     )
 })
+
 router.get('/activate/:link',
     AuthController.activate
 )

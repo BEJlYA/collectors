@@ -13,7 +13,7 @@ class FeedbackRepository {
 
     async findByTargetUser(targetUserId) {
         return await Feedbacks.findAll({
-            where: { targetUserId }
+            where: {targetUserId}
         })
     }
 

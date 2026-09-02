@@ -1,6 +1,6 @@
 const {DataTypes, Model} = require('@sequelize/core')
-const sequelize = require('../config/database');
-const {nanoid} = require("nanoid")
+const sequelize = require('../config/database')
+const crypto = require('crypto')
 
 class Users extends Model {
 }
@@ -53,11 +53,20 @@ Users.init({
         defaultValue: false,
         columnName: 'is_activated'
     },
+    isBlocked: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false,
+        columnName: 'is_blocked'
+    },
+    complainsCount: {
+        type: DataTypes.INTEGER,
+        defaultValue: 0
+    },
     publicId: {
         type: DataTypes.STRING,
         unique: true,
         allowNull: false,
-        defaultValue: () => nanoid(24),
+        defaultValue: () => crypto.randomUUID(),
         columnName: 'public_id'
     },
 }, {
